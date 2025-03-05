@@ -3,9 +3,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 from datetime import datetime, timezone
 
-from models.issue import Issue
-from models.user import User
-
 
 class Comment(Base):
     __tablename__ = "comments"
