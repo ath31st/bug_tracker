@@ -1,11 +1,11 @@
-from models.base import Base
+from models import db
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey, Enum
 from datetime import datetime, timezone
 from models.enums import IssueStatus, Priority
 
 
-class Issue(Base):
+class Issue(db.Model):
     __tablename__ = "issues"
 
     id: Mapped[int] = mapped_column(primary_key=True)

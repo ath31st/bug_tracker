@@ -1,10 +1,10 @@
-from models.base import Base
+from models import db
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey
 from datetime import datetime, timezone
 
 
-class Comment(Base):
+class Comment(db.Model):
     __tablename__ = "comments"
 
     id: Mapped[int] = mapped_column(primary_key=True)
