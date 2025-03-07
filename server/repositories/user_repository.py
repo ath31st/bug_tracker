@@ -1,5 +1,4 @@
 from models import db, User
-from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from typing import List, Optional
 
 
@@ -7,16 +6,9 @@ class UserRepository:
     @staticmethod
     def create(username: str, email: str, password: str) -> User:
         user = User(username=username, email=email, password=password)
-        try:
-            db.session.add(user)
-            db.session.commit()
-            return user
-        except IntegrityError:
-            db.session.rollback()
-            raise ValueError("Username or email already exists")
-        except SQLAlchemyError:
-            db.session.rollback()
-            raise ValueError("Failed to create user")
+        db.session.add(user)
+        db.session.commit()
+        return user
 
     @staticmethod
     def find_by_id(user_id: int) -> Optional[User]:
@@ -46,25 +38,14 @@ class UserRepository:
             user.email = email
         if password:
             user.password = password
-        try:
-            db.session.commit()
-            return user
-        except IntegrityError:
-            db.session.rollback()
-            raise ValueError("Username or email already exists")
-        except SQLAlchemyError:
-            db.session.rollback()
-            raise ValueError("Failed to update user")
+        db.session.commit()
+        return user
 
     @staticmethod
     def delete(user_id: int) -> bool:
         user = User.query.get(user_id)
         if not user:
             return False
-        try:
-            db.session.delete(user)
-            db.session.commit()
-            return True
-        except SQLAlchemyError:
-            db.session.rollback()
-            return False
+        db.session.delete(user)
+        db.session.commit()
+        return True

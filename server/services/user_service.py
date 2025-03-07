@@ -2,6 +2,7 @@ from repositories import UserRepository
 from flask_bcrypt import Bcrypt
 from typing import Optional, List
 from models.user import User
+from sqlalchemy.exc import IntegrityError
 
 
 class UserService:
@@ -14,7 +15,13 @@ class UserService:
             raise ValueError("Username, email, and password are required")
 
         hashed_password = self.bcrypt.generate_password_hash(password).decode("utf-8")
-        return self.repository.create(username, email, hashed_password)
+        try:
+            user = self.repository.create(username, email, hashed_password)
+            return user
+        except IntegrityError:
+            raise ValueError("Username or email already exists")
+        except Exception as e:
+            raise ValueError(f"Failed to create user: {str(e)}")
 
     def get_user_by_id(self, user_id: int) -> Optional[User]:
         user = self.repository.find_by_id(user_id)
@@ -29,10 +36,7 @@ class UserService:
         return user
 
     def get_all_users(self) -> List[User]:
-        users = self.repository.get_all()
-        if not users:
-            return []
-        return users
+        return self.repository.get_all() or []
 
     def update_user(
         self,
@@ -41,23 +45,35 @@ class UserService:
         email: Optional[str] = None,
         password: Optional[str] = None,
     ) -> User:
-        user = self.repository.find_by_id(user_id)
-        if not user:
+        if not self.repository.find_by_id(user_id):
             raise ValueError(f"User with ID {user_id} not found")
 
-        if password:
-            password = self.bcrypt.generate_password_hash(password).decode("utf-8")
+        hashed_password = (
+            self.bcrypt.generate_password_hash(password).decode("utf-8")
+            if password
+            else None
+        )
 
-        updated_user = self.repository.update(user_id, username, email, password)
-        if not updated_user:
-            raise ValueError("Failed to update user")
-        return updated_user
+        try:
+            updated_user = self.repository.update(
+                user_id, username, email, hashed_password
+            )
+            if not updated_user:
+                raise ValueError(f"User with ID {user_id} not found")
+            return updated_user
+        except IntegrityError:
+            raise ValueError("Username or email already exists")
+        except Exception as e:
+            raise ValueError(f"Failed to update user: {str(e)}")
 
     def delete_user(self, user_id: int) -> None:
-        if not self.repository.delete(user_id):
-            raise ValueError(
-                f"User with ID {user_id} not found or could not be deleted"
-            )
+        try:
+            if not self.repository.delete(user_id):
+                raise ValueError(
+                    f"User with ID {user_id} not found or could not be deleted"
+                )
+        except Exception as e:
+            raise ValueError(f"Failed to delete user: {str(e)}")
 
     def check_password(self, username: str, password: str) -> bool:
         user = self.repository.find_by_username(username)
