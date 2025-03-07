@@ -1,5 +1,5 @@
 from models import db, Comment
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from typing import List, Optional
 
 
@@ -7,9 +7,16 @@ class CommentRepository:
     @staticmethod
     def create(self, content: str, issue_id: int, author_id: int) -> Comment:
         comment = Comment(content=content, issue_id=issue_id, author_id=author_id)
-        db.session.add(comment)
-        db.session.commit()
-        return comment
+        try:
+            db.session.add(comment)
+            db.session.commit()
+            return comment
+        except IntegrityError:
+            db.session.rollback()
+            raise ValueError("Comment creation failed due to integrity constraint")
+        except SQLAlchemyError:
+            db.session.rollback()
+            raise ValueError("Comment creation failed")
 
     @staticmethod
     def get_all(self) -> List[Comment]:
@@ -25,8 +32,15 @@ class CommentRepository:
         if not comment:
             raise ValueError("Comment not found")
         comment.content = content
-        db.session.commit()
-        return comment
+        try:
+            db.session.commit()
+            return comment
+        except IntegrityError:
+            db.session.rollback()
+            raise ValueError("Comment update failed due to integrity constraint")
+        except SQLAlchemyError:
+            db.session.rollback()
+            raise ValueError("Comment update failed")
 
     @staticmethod
     def find_by_issue_id(self, issue_id: int) -> List[Comment]:
@@ -37,6 +51,10 @@ class CommentRepository:
         comment = Comment.query.get(comment_id)
         if not comment:
             return False
-        db.session.delete(comment)
-        db.session.commit()
-        return True
+        try:
+            db.session.delete(comment)
+            db.session.commit()
+            return True
+        except SQLAlchemyError:
+            db.session.rollback()
+            return False

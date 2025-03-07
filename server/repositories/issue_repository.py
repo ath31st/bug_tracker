@@ -1,6 +1,6 @@
 from typing import List, Optional
 from models import db, Issue
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 
 class IssueRepository:
@@ -18,6 +18,9 @@ class IssueRepository:
         except IntegrityError:
             db.session.rollback()
             raise ValueError("Issue creation failed due to integrity constraint")
+        except SQLAlchemyError:
+            db.session.rollback()
+            raise ValueError("Issue creation failed")
 
     @staticmethod
     def find_by_id(self, issue_id: int) -> Issue:
@@ -58,14 +61,25 @@ class IssueRepository:
             issue.priority = priority
         if assignee_id:
             issue.assignee_id = assignee_id
-        db.session.commit()
-        return issue
+        try:
+            db.session.commit()
+            return issue
+        except IntegrityError:
+            db.session.rollback()
+            raise ValueError("Issue update failed due to integrity constraint")
+        except SQLAlchemyError:
+            db.session.rollback()
+            raise ValueError("Issue update failed")
 
     @staticmethod
     def delete(self, issue_id: int) -> bool:
         issue = Issue.query.get(issue_id)
         if not issue:
             return False
-        db.session.delete(issue)
-        db.session.commit()
-        return True
+        try:
+            db.session.delete(issue)
+            db.session.commit()
+            return True
+        except SQLAlchemyError:
+            db.session.rollback()
+            return False
