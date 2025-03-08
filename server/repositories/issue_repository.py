@@ -1,11 +1,23 @@
 from typing import List, Optional
-from models import db, Issue
+from models import db, Issue, Priority, IssueStatus
 
 
 class IssueRepository:
     @staticmethod
-    def create(title: str, description: Optional[str], reporter_id: int) -> Issue:
-        issue = Issue(title=title, description=description, reporter_id=reporter_id)
+    def create(
+        title: str,
+        description: Optional[str],
+        status: IssueStatus,
+        priority: Priority,
+        reporter_id: int,
+    ) -> Issue:
+        issue = Issue(
+            title=title,
+            description=description,
+            status=status,
+            priority=priority,
+            reporter_id=reporter_id,
+        )
         db.session.add(issue)
         db.session.commit()
         return issue
@@ -31,8 +43,8 @@ class IssueRepository:
         issue_id: int,
         title: Optional[str] = None,
         description: Optional[str] = None,
-        status: Optional[str] = None,
-        priority: Optional[str] = None,
+        status: Optional[IssueStatus] = None,
+        priority: Optional[Priority] = None,
         assignee_id: Optional[int] = None,
     ) -> Optional[Issue]:
         issue = Issue.query.get(issue_id)
