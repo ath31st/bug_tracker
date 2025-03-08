@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from services import UserService
 from flask_bcrypt import Bcrypt
-from dto.user import UserSchema, NewUserSchema
+from validations.user import UserSchema, NewUserSchema
 from marshmallow import ValidationError
 
 
