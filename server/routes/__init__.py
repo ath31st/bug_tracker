@@ -4,7 +4,9 @@ from .comment_routes import create_comment_routes
 from flask_bcrypt import Bcrypt
 
 
-def register_routes(app, bcrypt: Bcrypt):
-    app.register_blueprint(create_user_routes(bcrypt=bcrypt))
-    app.register_blueprint(create_issue_routes())
-    app.register_blueprint(create_comment_routes())
+def register_routes(
+    app, bcrypt: Bcrypt, user_service, comment_service, issue_service, auth_service
+):
+    app.register_blueprint(create_user_routes(bcrypt, user_service))
+    app.register_blueprint(create_issue_routes(issue_service))
+    app.register_blueprint(create_comment_routes(comment_service))

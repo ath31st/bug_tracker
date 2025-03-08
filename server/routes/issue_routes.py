@@ -4,9 +4,9 @@ from validations.issue import IssueSchema, NewIssueSchema
 from marshmallow import ValidationError
 
 
-def create_issue_routes():
+def create_issue_routes(issue_service: IssueService):
     issue_routes = Blueprint("issue_routes", __name__, url_prefix="/api/v1/issues")
-    issue_service = IssueService()
+    issue_service = issue_service
     issue_schema = IssueSchema()
     new_issue_schema = NewIssueSchema()
 

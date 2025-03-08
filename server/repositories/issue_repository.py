@@ -1,10 +1,14 @@
 from typing import List, Optional
-from models import db, Issue, Priority, IssueStatus
+from models import Issue, Priority, IssueStatus
+from flask_sqlalchemy import SQLAlchemy
 
 
 class IssueRepository:
-    @staticmethod
+    def __init__(self, db: SQLAlchemy):
+        self.db = db
+
     def create(
+        self,
         title: str,
         description: Optional[str],
         status: IssueStatus,
@@ -18,28 +22,24 @@ class IssueRepository:
             priority=priority,
             reporter_id=reporter_id,
         )
-        db.session.add(issue)
-        db.session.commit()
+        self.db.session.add(issue)
+        self.db.session.commit()
         return issue
 
-    @staticmethod
-    def find_by_id(issue_id: int) -> Optional[Issue]:
-        return Issue.query.get(issue_id)
+    def find_by_id(self, issue_id: int) -> Optional[Issue]:
+        return self.db.session.get(Issue, issue_id)
 
-    @staticmethod
-    def get_all() -> List[Issue]:
-        return Issue.query.all()
+    def get_all(self) -> List[Issue]:
+        return self.db.session.query(Issue).all()
 
-    @staticmethod
-    def get_by_reporter_id(reporter_id: int) -> List[Issue]:
-        return Issue.query.filter_by(reporter_id=reporter_id).all()
+    def get_by_reporter_id(self, reporter_id: int) -> List[Issue]:
+        return self.db.session.query(Issue).filter_by(reporter_id=reporter_id).all()
 
-    @staticmethod
-    def get_by_assignee_id(assignee_id: int) -> List[Issue]:
-        return Issue.query.filter_by(assignee_id=assignee_id).all()
+    def get_by_assignee_id(self, assignee_id: int) -> List[Issue]:
+        return self.db.session.query(Issue).filter_by(assignee_id=assignee_id).all()
 
-    @staticmethod
     def update(
+        self,
         issue_id: int,
         title: Optional[str] = None,
         description: Optional[str] = None,
@@ -47,7 +47,7 @@ class IssueRepository:
         priority: Optional[Priority] = None,
         assignee_id: Optional[int] = None,
     ) -> Optional[Issue]:
-        issue = Issue.query.get(issue_id)
+        issue = self.db.session.get(Issue, issue_id)
         if not issue:
             return None
         if title:
@@ -60,14 +60,13 @@ class IssueRepository:
             issue.priority = priority
         if assignee_id:
             issue.assignee_id = assignee_id
-        db.session.commit()
+        self.db.session.commit()
         return issue
 
-    @staticmethod
-    def delete(issue_id: int) -> bool:
-        issue = Issue.query.get(issue_id)
+    def delete(self, issue_id: int) -> bool:
+        issue = self.db.session.get(Issue, issue_id)
         if not issue:
             return False
-        db.session.delete(issue)
-        db.session.commit()
+        self.db.session.delete(issue)
+        self.db.session.commit()
         return True

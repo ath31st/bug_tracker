@@ -1,35 +1,35 @@
-from models import db, User
+from flask_sqlalchemy import SQLAlchemy
+from models import User
 from typing import List, Optional
 
 
 class UserRepository:
-    @staticmethod
-    def create(username: str, email: str, password: str) -> User:
+    def __init__(self, db: SQLAlchemy):
+        self.db = db
+
+    def create(self, username: str, email: str, password: str) -> User:
         user = User(username=username, email=email, password=password)
-        db.session.add(user)
-        db.session.commit()
+        self.db.session.add(user)
+        self.db.session.commit()
         return user
 
-    @staticmethod
-    def find_by_id(user_id: int) -> Optional[User]:
-        return User.query.get(user_id)
+    def find_by_id(self, user_id: int) -> Optional[User]:
+        return self.db.session.get(User, user_id)
 
-    @staticmethod
-    def find_by_username(username: str) -> Optional[User]:
-        return User.query.filter_by(username=username).first()
+    def find_by_username(self, username: str) -> Optional[User]:
+        return self.db.session.query(User).filter_by(username=username).first()
 
-    @staticmethod
-    def get_all() -> List[User]:
-        return User.query.all()
+    def get_all(self) -> List[User]:
+        return self.db.session.query(User).all()
 
-    @staticmethod
     def update(
+        self,
         user_id: int,
         username: Optional[str] = None,
         email: Optional[str] = None,
         password: Optional[str] = None,
     ) -> Optional[User]:
-        user = User.query.get(user_id)
+        user = self.db.session.get(User, user_id)
         if not user:
             return None
         if username:
@@ -38,14 +38,13 @@ class UserRepository:
             user.email = email
         if password:
             user.password = password
-        db.session.commit()
+        self.db.session.commit()
         return user
 
-    @staticmethod
-    def delete(user_id: int) -> bool:
-        user = User.query.get(user_id)
+    def delete(self, user_id: int) -> bool:
+        user = self.db.session.get(User, user_id)
         if not user:
             return False
-        db.session.delete(user)
-        db.session.commit()
+        self.db.session.delete(user)
+        self.db.session.commit()
         return True

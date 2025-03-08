@@ -5,9 +5,9 @@ from validations.user import UserSchema, NewUserSchema
 from marshmallow import ValidationError
 
 
-def create_user_routes(bcrypt: Bcrypt):
+def create_user_routes(bcrypt: Bcrypt, user_service: UserService):
     user_routes = Blueprint("user_routes", __name__, url_prefix="/api/v1/users")
-    user_service = UserService(bcrypt)
+    user_service = user_service
     user_schema = UserSchema()
     new_user_schema = NewUserSchema()
 

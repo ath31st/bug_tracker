@@ -5,8 +5,8 @@ from sqlalchemy.exc import IntegrityError
 
 
 class CommentService:
-    def __init__(self):
-        self.repository = CommentRepository()
+    def __init__(self, comment_repository: CommentRepository):
+        self.repository = comment_repository
 
     def create_comment(self, content: str, issue_id: int, author_id: int) -> Comment:
         if not content or not issue_id or not author_id:

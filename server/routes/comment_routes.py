@@ -4,11 +4,11 @@ from validations.comment import CommentSchema, NewCommentSchema
 from marshmallow import ValidationError
 
 
-def create_comment_routes():
+def create_comment_routes(comment_service: CommentService):
     comment_routes = Blueprint(
         "comment_routes", __name__, url_prefix="/api/v1/comments"
     )
-    comment_service = CommentService()
+    comment_service = comment_service
     comment_schema = CommentSchema()
     new_comment_schema = NewCommentSchema()
 

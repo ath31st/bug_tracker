@@ -6,8 +6,8 @@ from sqlalchemy.exc import IntegrityError
 
 
 class UserService:
-    def __init__(self, bcrypt: Bcrypt):
-        self.repository = UserRepository()
+    def __init__(self, bcrypt: Bcrypt, user_repository: UserRepository):
+        self.repository = user_repository
         self.bcrypt = bcrypt
 
     def create_user(self, username: str, email: str, password: str) -> User:

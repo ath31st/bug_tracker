@@ -5,8 +5,8 @@ from sqlalchemy.exc import IntegrityError
 
 
 class IssueService:
-    def __init__(self):
-        self.repository = IssueRepository()
+    def __init__(self, issue_repository: IssueRepository):
+        self.repository = issue_repository
 
     def create_issue(
         self,
@@ -49,8 +49,8 @@ class IssueService:
         issue_id: int,
         title: Optional[str] = None,
         description: Optional[str] = None,
-        status: Optional[str] = None,
-        priority: Optional[str] = None,
+        status: Optional[IssueStatus] = None,
+        priority: Optional[Priority] = None,
         assignee_id: Optional[int] = None,
     ) -> Issue:
         try:
