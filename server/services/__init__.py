@@ -1,5 +1,8 @@
 from .user_service import UserService
 from .comment_service import CommentService
 from .issue_service import IssueService
+from flask_jwt_extended import JWTManager
 
-__all__ = ["UserService", "CommentService", "IssueService"]
+jwt = JWTManager()
+
+__all__ = ["jwt", "UserService", "CommentService", "IssueService"]
