@@ -1,6 +1,6 @@
 from repositories import IssueRepository
 from typing import List, Optional
-from models import Issue
+from models import Issue, IssueStatus, Priority
 from sqlalchemy.exc import IntegrityError
 
 
@@ -9,13 +9,20 @@ class IssueService:
         self.repository = IssueRepository()
 
     def create_issue(
-        self, title: str, description: Optional[str], reporter_id: int
+        self,
+        title: str,
+        description: Optional[str],
+        priority: Priority,
+        reporter_id: int,
+        status: IssueStatus = IssueStatus.NEW,
     ) -> Issue:
-        if not title or not reporter_id:
-            raise ValueError("Title and reporter ID are required")
+        if not title or not reporter_id or not priority:
+            raise ValueError("Title, priority and reporter ID are required")
 
         try:
-            issue = self.repository.create(title, description, reporter_id)
+            issue = self.repository.create(
+                title, description, status, priority, reporter_id
+            )
             return issue
         except IntegrityError:
             raise ValueError("Issue creation failed due to integrity constraint")
