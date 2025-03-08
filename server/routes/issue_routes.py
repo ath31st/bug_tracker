@@ -10,6 +10,17 @@ def create_issue_routes():
     issue_schema = IssueSchema()
     new_issue_schema = NewIssueSchema()
 
+    @issue_routes.before_request
+    def check_json_content_type():
+        if request.method in ["POST", "PUT"]:
+            if request.content_type != "application/json":
+                return (
+                    jsonify({"error": "Content-Type must be 'application/json'"}),
+                    415,
+                )
+            if request.get_json(silent=True) is None:
+                return jsonify({"error": "Invalid or missing JSON body"}), 400
+
     @issue_routes.route("/", methods=["POST"])
     def create_issue():
         try:
