@@ -1,12 +1,9 @@
 alembic==1.14.1
 bcrypt==4.3.0
 blinker==1.9.0
-cffi==1.17.1
 click==8.1.8
-cryptography==38.0.4
-Flask==2.3.3
+Flask==3.1.0
 Flask-Bcrypt==1.0.1
-flask-pyjwt==1.0.0
 Flask-SQLAlchemy==3.1.1
 greenlet==3.1.1
 itsdangerous==2.2.0
@@ -19,9 +16,6 @@ mypy==1.15.0
 mypy-extensions==1.0.0
 packaging==24.2
 psycopg2-binary==2.9.10
-pycparser==2.22
-PyJWT==2.10.1
-python-dotenv==0.21.1
 SQLAlchemy==2.0.38
 types-Flask-SQLAlchemy==2.5.9.4
 types-SQLAlchemy==1.4.53.38
