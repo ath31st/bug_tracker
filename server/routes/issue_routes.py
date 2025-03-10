@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required
 from services import IssueService
 from validations.issue import IssueSchema, NewIssueSchema
 from marshmallow import ValidationError
@@ -9,6 +10,11 @@ def create_issue_routes(issue_service: IssueService):
     issue_service = issue_service
     issue_schema = IssueSchema()
     new_issue_schema = NewIssueSchema()
+
+    @issue_routes.before_request
+    @jwt_required()
+    def protect_all_routes():
+        pass
 
     @issue_routes.before_request
     def check_json_content_type():

@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required
 from services import CommentService
 from validations.comment import CommentSchema, NewCommentSchema
 from marshmallow import ValidationError
@@ -11,6 +12,11 @@ def create_comment_routes(comment_service: CommentService):
     comment_service = comment_service
     comment_schema = CommentSchema()
     new_comment_schema = NewCommentSchema()
+
+    @comment_routes.before_request
+    @jwt_required()
+    def protect_all_routes():
+        pass
 
     @comment_routes.before_request
     def check_json_content_type():
