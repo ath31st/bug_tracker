@@ -8,4 +8,3 @@ class NewIssueSchema(Schema):
     description = fields.Str(allow_none=True)
     status = EnumField(IssueStatus, required=False)
     priority = EnumField(Priority, required=True)
-    reporter_id = fields.Int(required=True)

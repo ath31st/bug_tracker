@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from services import IssueService
 from validations.issue import IssueSchema, NewIssueSchema
 from marshmallow import ValidationError
@@ -30,8 +30,10 @@ def create_issue_routes(issue_service: IssueService):
     @issue_routes.route("/", methods=["POST"])
     def create_issue():
         try:
+            current_user_id = int(get_jwt_identity())
             data = request.get_json()
             issue_data = new_issue_schema.load(data)
+            issue_data["reporter_id"] = current_user_id
 
             issue = issue_service.create_issue(**issue_data)
             return jsonify(issue_schema.dump(issue)), 201
