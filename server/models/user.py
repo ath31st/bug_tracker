@@ -1,4 +1,3 @@
-from typing import List
 from models import db
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime, timezone
@@ -19,10 +18,10 @@ class User(db.Model):
         onupdate=lambda: datetime.now(timezone.utc),
     )
 
-    created_issues: Mapped[List["Issue"]] = relationship(
+    created_issues: Mapped[list["Issue"]] = relationship(
         "Issue", back_populates="reporter", foreign_keys="Issue.reporter_id"
     )
-    assigned_issues: Mapped[List["Issue"]] = relationship(
+    assigned_issues: Mapped[list["Issue"]] = relationship(
         "Issue", back_populates="assignee", foreign_keys="Issue.assignee_id"
     )
-    comments: Mapped[List["Comment"]] = relationship("Comment", back_populates="author")
+    comments: Mapped[list["Comment"]] = relationship("Comment", back_populates="author")

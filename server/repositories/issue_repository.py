@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 from models import Issue, Priority, IssueStatus
 from flask_sqlalchemy import SQLAlchemy
 
@@ -29,13 +29,13 @@ class IssueRepository:
     def find_by_id(self, issue_id: int) -> Optional[Issue]:
         return self.db.session.get(Issue, issue_id)
 
-    def get_all(self) -> List[Issue]:
+    def get_all(self) -> list[Issue]:
         return self.db.session.query(Issue).all()
 
-    def get_by_reporter_id(self, reporter_id: int) -> List[Issue]:
+    def get_by_reporter_id(self, reporter_id: int) -> list[Issue]:
         return self.db.session.query(Issue).filter_by(reporter_id=reporter_id).all()
 
-    def get_by_assignee_id(self, assignee_id: int) -> List[Issue]:
+    def get_by_assignee_id(self, assignee_id: int) -> list[Issue]:
         return self.db.session.query(Issue).filter_by(assignee_id=assignee_id).all()
 
     def update(

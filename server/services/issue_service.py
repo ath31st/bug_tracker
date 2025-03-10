@@ -1,5 +1,5 @@
 from repositories import IssueRepository
-from typing import List, Optional
+from typing import Optional
 from models import Issue, IssueStatus, Priority
 from sqlalchemy.exc import IntegrityError
 
@@ -35,13 +35,13 @@ class IssueService:
             raise ValueError(f"Issue with ID {issue_id} not found")
         return issue
 
-    def get_all_issues(self) -> List[Issue]:
+    def get_all_issues(self) -> list[Issue]:
         return self.repository.get_all() or []
 
-    def get_issues_by_reporter_id(self, reporter_id: int) -> List[Issue]:
+    def get_issues_by_reporter_id(self, reporter_id: int) -> list[Issue]:
         return self.repository.get_by_reporter_id(reporter_id) or []
 
-    def get_issues_by_assignee_id(self, assignee_id: int) -> List[Issue]:
+    def get_issues_by_assignee_id(self, assignee_id: int) -> list[Issue]:
         return self.repository.get_by_assignee_id(assignee_id) or []
 
     def update_issue(

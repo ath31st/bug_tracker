@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from models import Comment
-from typing import List, Optional
+from typing import Optional
 
 
 class CommentRepository:
@@ -13,7 +13,7 @@ class CommentRepository:
         self.db.session.commit()
         return comment
 
-    def get_all(self) -> List[Comment]:
+    def get_all(self) -> list[Comment]:
         return self.db.session.query(Comment).all()
 
     def find_by_id(self, comment_id: int) -> Optional[Comment]:
@@ -27,7 +27,7 @@ class CommentRepository:
         self.db.session.commit()
         return comment
 
-    def find_by_issue_id(self, issue_id: int) -> List[Comment]:
+    def find_by_issue_id(self, issue_id: int) -> list[Comment]:
         return self.db.session.query(Comment).filter_by(issue_id=issue_id).all()
 
     def delete(self, comment_id: int) -> bool:

@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from models import User
-from typing import List, Optional
+from typing import Optional
 
 
 class UserRepository:
@@ -19,7 +19,7 @@ class UserRepository:
     def find_by_username(self, username: str) -> Optional[User]:
         return self.db.session.query(User).filter_by(username=username).first()
 
-    def get_all(self) -> List[User]:
+    def get_all(self) -> list[User]:
         return self.db.session.query(User).all()
 
     def update(

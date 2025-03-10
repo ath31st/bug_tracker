@@ -1,5 +1,5 @@
 from repositories import CommentRepository
-from typing import List, Optional
+from typing import Optional
 from models import Comment
 from sqlalchemy.exc import IntegrityError
 
@@ -20,7 +20,7 @@ class CommentService:
         except Exception as e:
             raise ValueError(f"Comment creation failed: {str(e)}")
 
-    def get_all_comments(self) -> List[Comment]:
+    def get_all_comments(self) -> list[Comment]:
         return self.repository.get_all() or []
 
     def get_comment_by_id(self, comment_id: int) -> Optional[Comment]:
@@ -43,7 +43,7 @@ class CommentService:
         except Exception as e:
             raise ValueError(f"Comment update failed: {str(e)}")
 
-    def get_comments_by_issue_id(self, issue_id: int) -> List[Comment]:
+    def get_comments_by_issue_id(self, issue_id: int) -> list[Comment]:
         return self.repository.find_by_issue_id(issue_id) or []
 
     def delete_comment(self, comment_id: int) -> None:

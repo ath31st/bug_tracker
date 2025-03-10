@@ -1,6 +1,6 @@
 from repositories import UserRepository
 from flask_bcrypt import Bcrypt
-from typing import Optional, List
+from typing import Optional
 from models.user import User
 from sqlalchemy.exc import IntegrityError
 
