@@ -1,4 +1,6 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import get_jwt_identity, jwt_required
+from decorators import same_id_required
 from services import UserService
 from flask_bcrypt import Bcrypt
 from validations.user import UserSchema, NewUserSchema
@@ -23,6 +25,7 @@ def create_user_routes(bcrypt: Bcrypt, user_service: UserService):
                 return jsonify({"error": "Invalid or missing JSON body"}), 400
 
     @user_routes.route("/", methods=["GET"])
+    @jwt_required()
     def get_all_users():
         try:
             users = user_service.get_all_users()
@@ -31,6 +34,7 @@ def create_user_routes(bcrypt: Bcrypt, user_service: UserService):
             return jsonify({"error": "Internal Server Error"}), 500
 
     @user_routes.route("/<int:user_id>", methods=["GET"])
+    @jwt_required()
     def get_user(user_id):
         try:
             user = user_service.get_user_by_id(user_id)
@@ -54,6 +58,8 @@ def create_user_routes(bcrypt: Bcrypt, user_service: UserService):
             return jsonify({"error": "Internal Server Error: " + str(e)}), 500
 
     @user_routes.route("/<int:user_id>", methods=["PUT"])
+    @jwt_required()
+    @same_id_required("user_id")
     def update_user(user_id):
         try:
             data = request.get_json()
@@ -70,6 +76,8 @@ def create_user_routes(bcrypt: Bcrypt, user_service: UserService):
             return jsonify({"error": "Internal Server Error" + str(e)}), 500
 
     @user_routes.route("/<int:user_id>", methods=["DELETE"])
+    @jwt_required()
+    @same_id_required("user_id")
     def delete_user(user_id):
         try:
             user_service.delete_user(user_id)
