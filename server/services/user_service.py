@@ -29,13 +29,13 @@ class UserService:
             raise ValueError(f"User with ID {user_id} not found")
         return user
 
-    def get_user_by_username(self, username: str) -> Optional[User]:
+    def get_user_by_username(self, username: str) -> User:
         user = self.repository.find_by_username(username)
         if not user:
             raise ValueError(f"User with username {username} not found")
         return user
 
-    def get_all_users(self) -> List[User]:
+    def get_all_users(self) -> list[User]:
         return self.repository.get_all() or []
 
     def update_user(
