@@ -23,7 +23,7 @@ def create_app():
     user_service = UserService(bcrypt, user_repository)
     comment_service = CommentService(comment_repository)
     issue_service = IssueService(issue_repository)
-    auth_service = AuthService(user_repository)
+    auth_service = AuthService(user_service)
 
     register_routes(
         app, bcrypt, user_service, comment_service, issue_service, auth_service

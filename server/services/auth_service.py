@@ -1,16 +1,16 @@
+from typing import Optional
 from flask_jwt_extended import create_access_token
-from werkzeug.security import check_password_hash
-from repositories import UserRepository
+from services import UserService
 from exceptions import UnauthorizedException
 
 
 class AuthService:
-    def __init__(self, user_repository: UserRepository):
-        self.user_repository = user_repository
+    def __init__(self, user_service: UserService):
+        self.user_service = user_service
 
     def login(self, username: str, password: str) -> dict:
-        user = self.user_repository.find_by_username(username)
-        if not user or not check_password_hash(user.password_hash, password):
+        user = self.user_service.get_user_by_username(username)
+        if not user or not self.user_service.check_password(username, str(password)):
             raise UnauthorizedException("Invalid username or password")
 
         access_token = create_access_token(
