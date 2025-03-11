@@ -15,7 +15,7 @@ def register_routes(
     def camelize_response(response):
         if response.content_type == "application/json":
             data = response.get_json()
-            if data is None:
+            if data is not None:
                 response.set_data(jsonify(camelize(data)).data)
         return response
 
