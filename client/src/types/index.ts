@@ -9,6 +9,11 @@ export interface JwtResponse {
   accessToken: string;
 }
 
+export interface JwtUser {
+  userId: number;
+  username: string;
+}
+
 // user types
 
 export interface User {
