@@ -9,7 +9,6 @@ def create_comment_routes(comment_service: CommentService):
     comment_routes = Blueprint(
         "comment_routes", __name__, url_prefix="/api/v1/comments"
     )
-    comment_service = comment_service
     comment_schema = CommentSchema()
     new_comment_schema = NewCommentSchema()
 
