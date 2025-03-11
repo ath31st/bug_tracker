@@ -1,7 +1,7 @@
 import type { Comment, NewComment, UpdateComment } from '@/types';
 import axios from 'axios';
 
-const API_URL = import.meta.env.PUBLIC_API_URL + '/comments';
+const API_URL = import.meta.env.VITE_PUBLIC_API_URL + '/comments';
 
 export const getComments = async (issueId: number): Promise<Comment[]> => {
   const response = await axios.get(`${API_URL}/${issueId}`);

@@ -1,7 +1,7 @@
 import type { NewUser, UpdateUser, User } from '@/types';
 import axios from 'axios';
 
-const API_URL = import.meta.env.PUBLIC_API_URL + '/users';
+const API_URL = import.meta.env.VITE_PUBLIC_API_URL + '/users';
 
 export const getUsers = async (): Promise<User[]> => {
   const response = await axios.get(API_URL);
