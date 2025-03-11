@@ -1,4 +1,4 @@
-import type { Issue, NewIssue } from '@/types';
+import type { Issue, NewIssue, UpdateIssue } from '@/types';
 import axios from 'axios';
 
 const API_URL = import.meta.env.PUBLIC_API_URL + '/issues';
@@ -13,14 +13,14 @@ export const getIssueById = async (issueId: number): Promise<Issue> => {
   return response.data;
 };
 
-export const createIssue = async (issue: Issue): Promise<NewIssue> => {
+export const createIssue = async (issue: NewIssue): Promise<Issue> => {
   const response = await axios.post(API_URL, issue);
   return response.data;
 };
 
 export const updateIssue = async (
   issueId: number,
-  issue: Issue,
+  issue: UpdateIssue,
 ): Promise<Issue> => {
   const response = await axios.put(`${API_URL}/${issueId}`, issue);
   return response.data;
