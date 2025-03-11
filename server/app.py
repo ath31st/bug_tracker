@@ -6,11 +6,14 @@ from services import jwt
 from flask_bcrypt import Bcrypt
 from routes import register_routes
 from services import UserService, CommentService, IssueService, AuthService
+from flask_cors import CORS
 
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+
+    CORS(app)
 
     jwt.init_app(app)
     db.init_app(app)
