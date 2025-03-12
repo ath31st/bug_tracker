@@ -32,11 +32,38 @@ class IssueRepository:
     def get_all(self) -> list[Issue]:
         return self.db.session.query(Issue).all()
 
-    def get_by_reporter_id(self, reporter_id: int) -> list[Issue]:
-        return self.db.session.query(Issue).filter_by(reporter_id=reporter_id).all()
+    def get_all_paginated(self, page: int = 1, per_page: int = 10) -> list[Issue]:
+        return (
+            self.db.session.query(Issue)
+            .order_by(Issue.id)
+            .offset((page - 1) * per_page)
+            .limit(per_page)
+            .all()
+        )
 
-    def get_by_assignee_id(self, assignee_id: int) -> list[Issue]:
-        return self.db.session.query(Issue).filter_by(assignee_id=assignee_id).all()
+    def get_by_reporter_id(
+        self, reporter_id: int, page: int = 1, per_page: int = 10
+    ) -> list[Issue]:
+        return (
+            self.db.session.query(Issue)
+            .filter_by(reporter_id=reporter_id)
+            .order_by(Issue.id)
+            .offset((page - 1) * per_page)
+            .limit(per_page)
+            .all()
+        )
+
+    def get_by_assignee_id(
+        self, assignee_id: int, page: int = 1, per_page: int = 10
+    ) -> list[Issue]:
+        return (
+            self.db.session.query(Issue)
+            .filter_by(assignee_id=assignee_id)
+            .order_by(Issue.id)
+            .offset((page - 1) * per_page)
+            .limit(per_page)
+            .all()
+        )
 
     def update(
         self,

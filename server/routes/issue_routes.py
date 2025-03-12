@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from dto import Page
 from services import IssueService
 from validations.issue import IssueSchema, NewIssueSchema
 from marshmallow import ValidationError
@@ -44,8 +45,12 @@ def create_issue_routes(issue_service: IssueService):
     @issue_routes.route("/", methods=["GET"])
     def get_all_issues():
         try:
-            issues = issue_service.get_all_issues()
-            return jsonify(issue_schema.dump(issues, many=True)), 200
+            page = request.args.get("page", 1, type=int)
+            per_page = request.args.get("elementsPerPage", 10, type=int)
+
+            pageIssues = issue_service.get_all_issues_paginated(page, per_page)
+
+            return jsonify(pageIssues.to_dict(issue_schema)), 200
         except Exception as e:
             return jsonify({"error": "Internal Server Error"}), 500
 

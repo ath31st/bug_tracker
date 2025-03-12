@@ -2,6 +2,7 @@ from repositories import IssueRepository
 from typing import Optional
 from models import Issue, IssueStatus, Priority
 from sqlalchemy.exc import IntegrityError
+from dto import Page
 
 
 class IssueService:
@@ -38,11 +39,41 @@ class IssueService:
     def get_all_issues(self) -> list[Issue]:
         return self.repository.get_all() or []
 
-    def get_issues_by_reporter_id(self, reporter_id: int) -> list[Issue]:
-        return self.repository.get_by_reporter_id(reporter_id) or []
+    def get_count_issues(self) -> int:
+        return len(self.get_all_issues())
 
-    def get_issues_by_assignee_id(self, assignee_id: int) -> list[Issue]:
-        return self.repository.get_by_assignee_id(assignee_id) or []
+    def get_all_issues_paginated(
+        self, page: int, elements_per_page: int
+    ) -> Page[Issue]:
+        issues = self.repository.get_all_paginated(page, elements_per_page) or []
+        total_issues = self.get_count_issues()
+        total_pages = (total_issues + elements_per_page - 1) // elements_per_page
+
+        return Page(issues, total_issues, total_pages, page)
+
+    def get_issues_by_reporter_id(
+        self, reporter_id: int, page: int, elements_per_page: int
+    ) -> Page[Issue]:
+        issues = (
+            self.repository.get_by_reporter_id(reporter_id, page, elements_per_page)
+            or []
+        )
+        total_issues = self.get_count_issues()
+        total_pages = (total_issues + elements_per_page - 1) // elements_per_page
+
+        return Page(issues, total_issues, total_pages, page)
+
+    def get_issues_by_assignee_id(
+        self, assignee_id: int, page: int, elements_per_page: int
+    ) -> Page[Issue]:
+        issues = (
+            self.repository.get_by_assignee_id(assignee_id, page, elements_per_page)
+            or []
+        )
+        total_issues = self.get_count_issues()
+        total_pages = (total_issues + elements_per_page - 1) // elements_per_page
+
+        return Page(issues, total_issues, total_pages, page)
 
     def update_issue(
         self,
