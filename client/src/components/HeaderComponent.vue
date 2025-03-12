@@ -1,7 +1,7 @@
 <template>
   <v-app-bar app color="primary">
     <v-toolbar-title>
-      <h1>Bug tracker</h1>
+      <h3>Bug tracker</h3>
     </v-toolbar-title>
     <v-spacer></v-spacer>
 
