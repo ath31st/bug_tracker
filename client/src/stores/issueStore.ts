@@ -7,6 +7,10 @@ export const useIssuesStore = defineStore('issues', () => {
   const issues = ref<Issue[]>([]);
   const loading = ref(false);
   const error = ref<string | null>(null);
+  const currentPage = ref(1);
+  const elementsPerPage = ref(10);
+  const totalItems = ref(0);
+  const totalPages = ref(0);
 
   const getIssueById = computed(() => {
     return (issueId: number) =>
@@ -15,12 +19,20 @@ export const useIssuesStore = defineStore('issues', () => {
 
   const issuesCount = computed(() => issues.value.length);
 
-  async function fetchIssues() {
+  async function fetchIssues(page?: number, perPage?: number) {
     try {
       loading.value = true;
       error.value = null;
-      const response = await issueApi.getIssues();
-      issues.value = response;
+
+      const pageToFetch = page ?? currentPage.value;
+      const perPageToFetch = perPage ?? elementsPerPage.value;
+
+      const response = await issueApi.getIssues(pageToFetch, perPageToFetch);
+
+      issues.value = response.items;
+      currentPage.value = response.currentPage;
+      totalItems.value = response.totalItems;
+      totalPages.value = response.totalPages;
     } catch (err) {
       error.value =
         err instanceof Error ? err.message : 'Failed to fetch issues';
@@ -55,8 +67,13 @@ export const useIssuesStore = defineStore('issues', () => {
     try {
       loading.value = true;
       error.value = null;
+
       const newIssue = await issueApi.createIssue(issueData);
+
       issues.value.push(newIssue);
+      totalItems.value += 1;
+      totalPages.value = Math.ceil(totalItems.value / elementsPerPage.value);
+
       return newIssue;
     } catch (err) {
       error.value =
@@ -76,6 +93,10 @@ export const useIssuesStore = defineStore('issues', () => {
       if (index !== -1) {
         issues.value[index] = updatedIssue;
       }
+
+      totalItems.value -= 1;
+      totalPages.value = Math.ceil(totalItems.value / elementsPerPage.value);
+
       return updatedIssue;
     } catch (err) {
       error.value =
@@ -101,10 +122,26 @@ export const useIssuesStore = defineStore('issues', () => {
     }
   }
 
+  async function setPage(page: number) {
+    if (page >= 1 && page <= totalPages.value) {
+      await fetchIssues(page);
+    }
+  }
+
+  async function setElementsPerPage(perPage: number) {
+    if (perPage > 0) {
+      await fetchIssues(1, perPage);
+    }
+  }
+
   return {
     issues,
     loading,
     error,
+    currentPage,
+    elementsPerPage,
+    totalItems,
+    totalPages,
 
     getIssueById,
     issuesCount,
@@ -114,5 +151,7 @@ export const useIssuesStore = defineStore('issues', () => {
     createIssue,
     updateIssue,
     deleteIssue,
+    setPage,
+    setElementsPerPage,
   };
 });
