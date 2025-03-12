@@ -35,7 +35,7 @@
             </v-form>
           </v-card-text>
 
-          <v-card-actions class="d-flex justify-center">
+          <v-card-actions class="d-flex flex-column justify-center">
             <v-btn
               color="primary"
               large
@@ -44,6 +44,9 @@
               @click="login"
             >
               Войти
+            </v-btn>
+            <v-btn text to="/register" color="primary">
+              Нет аккаунта? Зарегистрируйтесь
             </v-btn>
           </v-card-actions>
 
