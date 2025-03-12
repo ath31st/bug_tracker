@@ -91,3 +91,19 @@ export interface Page<T> {
   totalPages: number;
   currentPage: number;
 }
+
+// enums
+
+export enum Priority {
+  LOW = 'low',
+  MEDIUM = 'medium',
+  HIGH = 'high',
+  CRITICAL = 'critical',
+}
+
+export enum IssueStatus {
+  NEW = 'new',
+  IN_PROGRESS = 'in_progress',
+  RESOLVED = 'resolved',
+  CLOSED = 'closed',
+}
