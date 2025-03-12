@@ -2,12 +2,32 @@ import type { Credentials } from '@/types';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { login } from '@/api/authApi';
-import { decodeToken } from '@/api/jwtApi';
+import { decodeToken, isTokenExpired } from '@/api/jwtApi';
 import type { JwtUser } from '@/types';
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref<string | null>(null);
   const user = ref<JwtUser | null>(null);
+
+  async function initialize() {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken && !isTokenExpired(storedToken)) {
+      try {
+        token.value = storedToken;
+        user.value = decodeToken(storedToken);
+      } catch (error) {
+        console.error('Failed to decode token:', error);
+        localStorage.removeItem('token');
+        token.value = null;
+        user.value = null;
+      }
+    } else if (storedToken && isTokenExpired(storedToken)) {
+      console.log('Token expired');
+      localStorage.removeItem('token');
+      token.value = null;
+      user.value = null;
+    }
+  }
 
   async function loginUser(credentials: Credentials) {
     try {
@@ -38,5 +58,6 @@ export const useAuthStore = defineStore('auth', () => {
     token,
     user,
     loginUser,
+    initialize,
   };
 });
