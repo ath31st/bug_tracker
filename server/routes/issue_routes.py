@@ -2,13 +2,14 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from dto import Page
 from services import IssueService
-from validations.issue import IssueSchema, NewIssueSchema
+from validations.issue import IssueSchema, NewIssueSchema, FullIssueSchema
 from marshmallow import ValidationError
 
 
 def create_issue_routes(issue_service: IssueService):
     issue_routes = Blueprint("issue_routes", __name__, url_prefix="/api/v1/issues")
     issue_schema = IssueSchema()
+    full_issue_schema = FullIssueSchema()
     new_issue_schema = NewIssueSchema()
 
     @issue_routes.before_request
@@ -58,7 +59,7 @@ def create_issue_routes(issue_service: IssueService):
     def get_issue(issue_id):
         try:
             issue = issue_service.get_issue_by_id(issue_id)
-            return jsonify(issue_schema.dump(issue)), 200
+            return jsonify(full_issue_schema.dump(issue)), 200
         except ValueError as e:
             return jsonify({"error": str(e)}), 404
         except Exception as e:

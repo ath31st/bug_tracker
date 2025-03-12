@@ -1,6 +1,7 @@
 from typing import Optional
 from models import Issue, Priority, IssueStatus
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import joinedload, subqueryload
 
 
 class IssueRepository:
@@ -27,7 +28,15 @@ class IssueRepository:
         return issue
 
     def find_by_id(self, issue_id: int) -> Optional[Issue]:
-        return self.db.session.get(Issue, issue_id)
+        return (
+            self.db.session.query(Issue)
+            .options(
+                joinedload(Issue.reporter),
+                joinedload(Issue.assignee),
+                subqueryload(Issue.comments),
+            )
+            .get(issue_id)
+        )
 
     def get_all(self) -> list[Issue]:
         return self.db.session.query(Issue).all()
@@ -35,6 +44,10 @@ class IssueRepository:
     def get_all_paginated(self, page: int = 1, per_page: int = 10) -> list[Issue]:
         return (
             self.db.session.query(Issue)
+            .options(
+                joinedload(Issue.reporter),
+                joinedload(Issue.assignee),
+            )
             .order_by(Issue.id)
             .offset((page - 1) * per_page)
             .limit(per_page)
