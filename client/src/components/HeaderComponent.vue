@@ -1,11 +1,8 @@
 <template>
   <v-app-bar app color="primary">
     <v-toolbar-title>
-      <router-link to="/" class="text-decoration-none white--text">
-        Bug tracker
-      </router-link>
+      <h1>Bug tracker</h1>
     </v-toolbar-title>
-
     <v-spacer></v-spacer>
 
     <v-btn text to="/" exact>Home</v-btn>
@@ -13,7 +10,7 @@
 
     <template v-if="authStore.user">
       <v-btn text @click="logout">Logout</v-btn>
-      <v-chip color="white" text-color="primary" class="ml-2">
+      <v-chip size="large" class="ml-2 mr-10">
         {{ authStore.user?.username.toUpperCase() || 'User' }}
       </v-chip>
     </template>
@@ -36,4 +33,8 @@ function logout() {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.v-btn {
+  width: 100px;
+}
+</style>
