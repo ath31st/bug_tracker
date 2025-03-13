@@ -46,7 +46,7 @@
 
       <v-divider class="my-6"></v-divider>
 
-      <IssueComments :comments="issue.comments" />
+      <CommentList :comments="issue.comments" />
     </v-card-text>
   </v-card>
 </template>
@@ -57,7 +57,7 @@ import { formatDate } from '@/utils/formatDate';
 import { getStatusColor, getStatusName } from '@/utils/statusUtils';
 import { getPriorityColor, getPriorityName } from '@/utils/priorityUtils';
 import type { Issue } from '@/types';
-import IssueComments from '@/components/comment/IssueComments.vue';
+import CommentList from '@/components/comment/CommentList.vue';
 
 defineProps<{
   issue: Issue;
