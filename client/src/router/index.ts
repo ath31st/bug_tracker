@@ -3,6 +3,7 @@ import HomeView from '@/views/HomeView.vue';
 import LoginView from '@/views/LoginView.vue';
 import { useAuthStore } from '@/stores/authStore';
 import RegisterView from '@/views/RegisterView.vue';
+import IssueView from '@/views/IssueView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -11,6 +12,13 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/issue/:id',
+      name: 'Issue',
+      component: IssueView,
+      props: true,
       meta: { requiresAuth: true },
     },
     {
