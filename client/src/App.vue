@@ -1,5 +1,14 @@
 <template>
-  <v-app>
+  <v-app
+    :style="{
+      backgroundImage: `url(${backgroundImage})`,
+      backgroundRepeat: 'no-repeat',
+      backgroundPosition: 'center center',
+      backgroundAttachment: 'fixed',
+      backgroundSize: 'cover',
+      minHeight: '100vh',
+    }"
+  >
     <HeaderComponent v-if="shouldShowLayout" />
     <v-main>
       <router-view />
@@ -13,6 +22,7 @@ import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import HeaderComponent from '@/components/HeaderComponent.vue';
 import FooterComponent from '@/components/FooterComponent.vue';
+import backgroundImage from '@/assets/background.jpg';
 
 const route = useRoute();
 const noLayoutRoutes = ['/login', '/register'];
