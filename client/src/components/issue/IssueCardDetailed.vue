@@ -9,36 +9,44 @@
     </v-card-subtitle>
     <v-card-text>
       <v-row>
-        <v-col cols="12" md="6">
+        <v-col cols="7">
           <p><strong>Описание:</strong></p>
           <p>{{ issue.description }}</p>
         </v-col>
-        <v-col cols="12" md="6">
+
+        <v-divider vertical></v-divider>
+
+        <v-col cols="5">
           <v-row>
+            <v-col cols="6">
+              <strong>Автор:</strong> {{ issue.reporter.username }}
+            </v-col>
             <v-col cols="6">
               <strong>Статус:</strong>
               <v-chip :color="getStatusColor(issue.status)" class="ml-2">
                 {{ getStatusName(issue.status) }}
               </v-chip>
             </v-col>
-            <v-col cols="6">
-              <strong>Приоритет:</strong>
-              <v-chip :color="getPriorityColor(issue.priority)" class="ml-2">
-                {{ issue.priority }}
-              </v-chip>
-            </v-col>
           </v-row>
           <v-row>
-            <v-col cols="6">
-              <strong>Автор:</strong> {{ issue.reporter.username }}
-            </v-col>
             <v-col cols="6">
               <strong>Исполнитель:</strong>
               {{ issue.assignee?.username || 'Не назначен' }}
             </v-col>
+
+            <v-col cols="6">
+              <strong>Приоритет:</strong>
+              <v-chip :color="getPriorityColor(issue.priority)" class="ml-2">
+                {{ getPriorityName(issue.priority) }}
+              </v-chip>
+            </v-col>
           </v-row>
         </v-col>
       </v-row>
+
+      <v-divider class="my-6"></v-divider>
+
+      <IssueComments :comments="issue.comments" />
     </v-card-text>
   </v-card>
 </template>
@@ -47,8 +55,9 @@
 import { defineProps } from 'vue';
 import { formatDate } from '@/utils/formatDate';
 import { getStatusColor, getStatusName } from '@/utils/statusUtils';
-import { getPriorityColor } from '@/utils/priorityUtils';
+import { getPriorityColor, getPriorityName } from '@/utils/priorityUtils';
 import type { Issue } from '@/types';
+import IssueComments from '@/components/comment/IssueComments.vue';
 
 defineProps<{
   issue: Issue;
