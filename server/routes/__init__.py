@@ -21,5 +21,5 @@ def register_routes(
 
     app.register_blueprint(create_user_routes(bcrypt, user_service))
     app.register_blueprint(create_issue_routes(issue_service))
-    app.register_blueprint(create_comment_routes(comment_service))
+    app.register_blueprint(create_comment_routes(comment_service, issue_service))
     app.register_blueprint(create_auth_routes(auth_service))
