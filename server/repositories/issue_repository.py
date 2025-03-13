@@ -1,5 +1,7 @@
 from typing import Optional
-from models import Issue, Priority, IssueStatus
+
+from sqlalchemy import exists, select
+from models import Issue, Priority, IssueStatus, Comment
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import joinedload, subqueryload
 
@@ -33,7 +35,7 @@ class IssueRepository:
             .options(
                 joinedload(Issue.reporter),
                 joinedload(Issue.assignee),
-                subqueryload(Issue.comments),
+                subqueryload(Issue.comments).joinedload(Comment.author),
             )
             .get(issue_id)
         )
@@ -110,3 +112,9 @@ class IssueRepository:
         self.db.session.delete(issue)
         self.db.session.commit()
         return True
+
+    def check_if_issue_exists_and_not_closed(self, issue_id: int) -> bool:
+        query = select(
+            exists().where(Issue.id == issue_id, Issue.status != IssueStatus.CLOSED)
+        )
+        return self.db.session.execute(query).scalar()

@@ -104,3 +104,6 @@ class IssueService:
                 )
         except Exception as e:
             raise ValueError(f"Issue deletion failed: {str(e)}")
+
+    def check_if_issue_exists_and_not_closed(self, issue_id: int) -> bool:
+        return self.repository.check_if_issue_exists_and_not_closed(issue_id)
