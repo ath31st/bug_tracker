@@ -40,13 +40,13 @@ export interface Issue {
   id: number;
   title: string;
   description: string;
-  status: string;
-  priority: string;
+  status: IssueStatus;
+  priority: Priority;
   reporter: User;
   assignee?: User;
   comments: Comment[];
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface NewIssue {
@@ -60,7 +60,7 @@ export interface UpdateIssue {
   description?: string;
   status?: string;
   priority?: string;
-  assignee_id?: number;
+  assigneeId?: number;
 }
 
 // comment types
@@ -69,14 +69,14 @@ export interface Comment {
   id: number;
   content: string;
   issue: Issue;
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
   author: User;
 }
 
 export interface NewComment {
   content: string;
-  issue_id: number;
+  issueId: number;
 }
 
 export interface UpdateComment {
