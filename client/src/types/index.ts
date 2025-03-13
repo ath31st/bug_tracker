@@ -68,7 +68,7 @@ export interface UpdateIssue {
 export interface Comment {
   id: number;
   content: string;
-  issue: Issue;
+  issueId: number;
   createdAt: string;
   updatedAt: string;
   author: User;
