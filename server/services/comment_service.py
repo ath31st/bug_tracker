@@ -29,9 +29,15 @@ class CommentService:
             raise ValueError(f"Comment with ID {comment_id} not found")
         return comment
 
-    def update_comment(self, comment_id: int, content: str) -> Comment:
+    def update_comment(self, comment_id: int, editor_id: int, content: str) -> Comment:
         if not content:
             raise ValueError("Comment content is required")
+
+        if not self.check_if_comment_exists(comment_id):
+            raise ValueError(f"Comment with ID {comment_id} not found")
+
+        if not self.check_if_user_is_author(comment_id, editor_id):
+            raise ValueError("Only the author of the comment can update it")
 
         try:
             updated_comment = self.repository.update(comment_id, content)
@@ -46,11 +52,20 @@ class CommentService:
     def get_comments_by_issue_id(self, issue_id: int) -> list[Comment]:
         return self.repository.find_by_issue_id(issue_id) or []
 
-    def delete_comment(self, comment_id: int) -> None:
+    def delete_comment(self, comment_id: int, author_id: int) -> None:
         try:
+            if not self.check_if_user_is_author(comment_id, author_id):
+                raise ValueError("Only the author of the comment can delete it")
+
             if not self.repository.delete(comment_id):
                 raise ValueError(
                     f"Comment with ID {comment_id} not found or could not be deleted"
                 )
         except Exception as e:
             raise ValueError(f"Comment deletion failed: {str(e)}")
+
+    def check_if_comment_exists(self, comment_id: int) -> bool:
+        return self.repository.check_if_comment_exists(comment_id)
+
+    def check_if_user_is_author(self, comment_id: int, user_id: int) -> bool:
+        return self.repository.check_if_user_is_author(comment_id, user_id)

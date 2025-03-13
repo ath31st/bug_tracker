@@ -1,11 +1,12 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from services import CommentService
+from services import IssueService
 from validations.comment import CommentSchema, NewCommentSchema
 from marshmallow import ValidationError
 
 
-def create_comment_routes(comment_service: CommentService):
+def create_comment_routes(comment_service: CommentService, issue_service: IssueService):
     comment_routes = Blueprint(
         "comment_routes", __name__, url_prefix="/api/v1/comments"
     )
@@ -31,8 +32,18 @@ def create_comment_routes(comment_service: CommentService):
     @comment_routes.route("/", methods=["POST"])
     def create_comment():
         try:
+            current_user_id = int(get_jwt_identity())
             data = request.get_json()
             comment_data = new_comment_schema.load(data)
+            comment_data["author_id"] = current_user_id
+
+            if not issue_service.check_if_issue_exists_and_not_closed(
+                comment_data["issue_id"]
+            ):
+                return (
+                    jsonify({"error": "Issue does not exist or is closed"}),
+                    400,
+                )
 
             comment = comment_service.create_comment(**comment_data)
             return jsonify(comment_schema.dump(comment)), 201
@@ -62,10 +73,13 @@ def create_comment_routes(comment_service: CommentService):
     @comment_routes.route("/<int:comment_id>", methods=["PUT"])
     def update_comment(comment_id):
         try:
+            current_user_id = int(get_jwt_identity())
             data = request.get_json()
             comment_data = new_comment_schema.load(data, partial=True)
 
-            comment = comment_service.update_comment(comment_id, **comment_data)
+            comment = comment_service.update_comment(
+                comment_id, current_user_id, **comment_data
+            )
             return jsonify(comment_schema.dump(comment)), 200
         except (ValueError, ValidationError) as e:
             return jsonify({"error": str(e)}), 400
@@ -75,7 +89,8 @@ def create_comment_routes(comment_service: CommentService):
     @comment_routes.route("/<int:comment_id>", methods=["DELETE"])
     def delete_comment(comment_id):
         try:
-            comment_service.delete_comment(comment_id)
+            current_user_id = int(get_jwt_identity())
+            comment_service.delete_comment(comment_id, current_user_id)
             return "", 204
         except ValueError as e:
             return jsonify({"error": str(e)}), 404

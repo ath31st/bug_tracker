@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import exists, select
 from models import Comment
 from typing import Optional
 
@@ -37,3 +38,11 @@ class CommentRepository:
         self.db.session.delete(comment)
         self.db.session.commit()
         return True
+
+    def check_if_comment_exists(self, comment_id: int) -> bool:
+        return self.db.session.scalar(select(exists().where(Comment.id == comment_id)))
+
+    def check_if_user_is_author(self, comment_id: int, user_id: int) -> bool:
+        query = select(Comment.author_id).where(Comment.id == comment_id)
+        author_id = self.db.session.execute(query).scalar()
+        return author_id == user_id
