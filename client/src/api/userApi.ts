@@ -1,20 +1,20 @@
 import type { NewUser, UpdateUser, User } from '@/types';
-import axios from 'axios';
+import customAxios from '@/config/axiosConfig';
 
-const API_URL = import.meta.env.VITE_PUBLIC_API_URL + '/users';
+const USERS_PREFIX = '/users/';
 
 export const getUsers = async (): Promise<User[]> => {
-  const response = await axios.get(API_URL);
+  const response = await customAxios.get(USERS_PREFIX);
   return response.data;
 };
 
 export const getUser = async (userId: number): Promise<User> => {
-  const response = await axios.get(`${API_URL}/${userId}`);
+  const response = await customAxios.get(`${USERS_PREFIX}${userId}`);
   return response.data;
 };
 
 export const createUser = async (user: NewUser): Promise<User> => {
-  const response = await axios.post(API_URL, user);
+  const response = await customAxios.post(USERS_PREFIX, user);
   return response.data;
 };
 
@@ -22,10 +22,10 @@ export const updateUser = async (
   userId: number,
   user: UpdateUser,
 ): Promise<User> => {
-  const response = await axios.put(`${API_URL}/${userId}`, user);
+  const response = await customAxios.put(`${USERS_PREFIX}${userId}`, user);
   return response.data;
 };
 
 export const deleteUser = async (userId: number): Promise<void> => {
-  await axios.delete(`${API_URL}/${userId}`);
+  await customAxios.delete(`${USERS_PREFIX}${userId}`);
 };
