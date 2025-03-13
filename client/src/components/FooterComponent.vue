@@ -1,14 +1,8 @@
 <template>
   <v-footer app color="primary" height="40">
-    <v-container>
-      <v-row>
-        <v-col cols="12" class="text-center">
-          <span
-            >&copy; {{ new Date().getFullYear() }} Bug tracker. All rights
-            reserved.</span
-          >
-        </v-col>
-      </v-row>
+    <v-container class="d-flex" style="gap: 10px">
+      <span>&copy; {{ new Date().getFullYear() }} Bug tracker</span>
+      <span>(Тестовый проект)</span>
     </v-container>
   </v-footer>
 </template>
