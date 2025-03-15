@@ -4,18 +4,85 @@
       <strong>{{ comment.author.username }}</strong>
       <span class="comment-date">{{ formatDate(comment.createdAt) }}</span>
     </v-list-item-title>
-    <v-list-item-subtitle>{{ comment.content }}</v-list-item-subtitle>
+
+    <template v-if="isEditing">
+      <v-row align="center" class="mt-2">
+        <v-col cols="10">
+          <v-text-field
+            v-model="editedContent"
+            variant="outlined"
+            clearable
+            hide-details="auto"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="2">
+          <v-btn color="success" class="mr-2" @click="saveEdit"
+            >Сохранить</v-btn
+          >
+          <v-btn color="error" @click="cancelEdit">Отменить</v-btn>
+        </v-col>
+      </v-row>
+    </template>
+    <template v-else>
+      <v-list-item-subtitle>{{ comment.content }}</v-list-item-subtitle>
+    </template>
+
+    <template v-if="isAuthor && !isEditing" #append>
+      <v-btn
+        icon
+        variant="text"
+        color="primary"
+        @click="startEditing"
+        class="mr-2"
+      >
+        <v-icon>mdi-pencil</v-icon>
+      </v-btn>
+      <v-btn icon variant="text" color="error" @click="handleDelete">
+        <v-icon>mdi-delete</v-icon>
+      </v-btn>
+    </template>
   </v-list-item>
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { defineProps, ref } from 'vue';
 import { formatDate } from '@/utils/formatDate';
-import type { Comment } from '@/types';
+import type { Comment, UpdateComment } from '@/types';
 
-defineProps<{
+const props = defineProps<{
   comment: Comment;
+  isAuthor: boolean;
 }>();
+
+const emit = defineEmits<{
+  (e: 'update', id: number, updatedComment: UpdateComment): void;
+  (e: 'delete', id: number): void;
+}>();
+
+const isEditing = ref(false);
+const editedContent = ref(props.comment.content);
+
+const startEditing = () => {
+  editedContent.value = props.comment.content;
+  isEditing.value = true;
+};
+
+const saveEdit = () => {
+  const updatedComment: UpdateComment = {
+    content: editedContent.value.trim(),
+  };
+  emit('update', props.comment.id, updatedComment);
+  isEditing.value = false;
+};
+
+const cancelEdit = () => {
+  isEditing.value = false;
+  editedContent.value = props.comment.content;
+};
+
+const handleDelete = () => {
+  emit('delete', props.comment.id);
+};
 </script>
 
 <style scoped>
