@@ -8,13 +8,10 @@
       {{ issuesStore.error }}
     </v-alert>
 
-    <v-row v-if="!issuesStore.loading && issuesStore.issues.length">
-      <v-col cols="12" v-for="issue in issuesStore.issues" :key="issue.id">
-        <router-link :to="`/issue/${issue.id}`" class="issue-link">
-          <IssueCardSmall :issue="issue" />
-        </router-link>
-      </v-col>
-    </v-row>
+    <IssueList
+      :issues="issuesStore.issues"
+      v-if="!issuesStore.loading && issuesStore.issues.length"
+    />
 
     <v-alert
       v-if="
@@ -23,7 +20,7 @@
       type="info"
       class="my-4"
     >
-      No issues found
+      База данных пуста
     </v-alert>
 
     <div class="pagination-controls" v-if="issuesStore.totalPages > 1">
@@ -59,8 +56,8 @@
 import { onMounted, ref, computed } from 'vue';
 import { useIssuesStore } from '@/stores/issueStore';
 import IssueListHeader from '@/components/issue/IssueListHeader.vue';
-import IssueCardSmall from '@/components/issue/IssueCard.vue';
 import SpinnerLoader from '@/components/loader/SpinnerLoader.vue';
+import IssueList from '@/components/issue/IssueList.vue';
 
 const issuesStore = useIssuesStore();
 const itemsPerPage = ref(issuesStore.elementsPerPage);
