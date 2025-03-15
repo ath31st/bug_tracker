@@ -7,6 +7,11 @@
         v-for="comment in comments"
         :key="comment.id"
         :comment="comment"
+        :is-author="authUserId === comment.author.id"
+        @update="
+          ($event, updatedComment) => $emit('update', $event, updatedComment)
+        "
+        @delete="($event) => $emit('delete', $event)"
       />
     </v-list>
 
@@ -16,18 +21,18 @@
 
 <script setup lang="ts">
 import { defineProps } from 'vue';
-import type { Comment } from '@/types';
+import type { Comment, UpdateComment } from '@/types';
 import CommentItem from './CommentItem.vue';
 
 defineProps<{
   comments: Comment[];
+  authUserId?: number;
+}>();
+
+defineEmits<{
+  (e: 'delete', id: number): void;
+  (e: 'update', id: number, comment: UpdateComment): void;
 }>();
 </script>
 
-<style scoped>
-.comment-date {
-  font-size: 0.8rem;
-  color: gray;
-  margin-left: 8px;
-}
-</style>
+<style scoped></style>
