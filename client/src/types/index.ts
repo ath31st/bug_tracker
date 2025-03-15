@@ -10,7 +10,7 @@ export interface JwtResponse {
 }
 
 export interface JwtUser {
-  userId: number;
+  id: number;
   username: string;
 }
 
