@@ -37,6 +37,21 @@ export const useCommentsStore = defineStore('comments', () => {
     }
   };
 
+  const getCommentById = async (commentId: number): Promise<Comment> => {
+    try {
+      loading.value = true;
+      error.value = null;
+      const comment = await commentApi.getCommentById(commentId);
+      return comment;
+    } catch (err) {
+      error.value =
+        err instanceof Error ? err.message : 'Failed to fetch comment';
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   const updateComment = async (commentId: number, comment: UpdateComment) => {
     try {
       loading.value = true;
@@ -71,6 +86,7 @@ export const useCommentsStore = defineStore('comments', () => {
     error,
     createComment,
     getCommentsByIssueId,
+    getCommentById,
     updateComment,
     deleteComment,
   };
