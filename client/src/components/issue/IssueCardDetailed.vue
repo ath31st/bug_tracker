@@ -45,7 +45,12 @@
 
       <v-divider class="my-6"></v-divider>
 
-      <CommentList :comments="issue.comments" />
+      <CommentList
+        :comments="issue.comments"
+        :auth-user-id="authUserId"
+        @delete="handleDeleteComment"
+        @update="handleUpdateComment"
+      />
 
       <v-row class="mt-2" align="center">
         <v-col cols="10">
@@ -76,16 +81,19 @@ import { defineProps, reactive, ref } from 'vue';
 import { formatDate } from '@/utils/formatDate';
 import { getStatusColor, getStatusName } from '@/utils/statusUtils';
 import { getPriorityColor, getPriorityName } from '@/utils/priorityUtils';
-import type { Issue, NewComment, Comment } from '@/types';
+import type { Issue, NewComment, Comment, UpdateComment } from '@/types';
 import CommentList from '@/components/comment/CommentList.vue';
 import { useCommentsStore } from '@/stores/commentStore';
+import { useAuthStore } from '@/stores/authStore';
 
 const commentsStore = useCommentsStore();
+const authStore = useAuthStore();
 
 const props = defineProps<{
   issue: Issue;
 }>();
 
+const authUserId = ref(authStore.user?.id);
 const comment = ref('');
 const localComments = reactive<Comment[]>(props.issue.comments);
 
@@ -109,6 +117,30 @@ const submitComment = async () => {
     console.error(err);
   } finally {
     comment.value = '';
+  }
+};
+
+const handleUpdateComment = async (
+  commentId: number,
+  comment: UpdateComment,
+) => {
+  try {
+    await commentsStore.updateComment(commentId, comment);
+    const updatedComment = await commentsStore.getCommentById(commentId);
+    const index = localComments.findIndex((c) => c.id === commentId);
+    if (index !== -1) localComments[index] = updatedComment;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const handleDeleteComment = async (commentId: number) => {
+  if (confirm('Удалить комментарий?')) {
+    await commentsStore.deleteComment(commentId);
+    localComments.splice(
+      localComments.findIndex((c) => c.id === commentId),
+      1,
+    );
   }
 };
 </script>
