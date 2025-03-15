@@ -78,7 +78,7 @@
 
 <script setup lang="ts">
 import { defineProps, reactive, ref } from 'vue';
-import { formatDate } from '@/utils/formatDate';
+import { formatDate } from '@/utils/dateUtils';
 import { getStatusColor, getStatusName } from '@/utils/statusUtils';
 import { getPriorityColor, getPriorityName } from '@/utils/priorityUtils';
 import type { Issue, NewComment, Comment, UpdateComment } from '@/types';

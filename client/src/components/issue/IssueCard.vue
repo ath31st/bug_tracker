@@ -35,7 +35,7 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 import type { Issue } from '@/types';
-import { formatDate } from '@/utils/formatDate';
+import { formatDate } from '@/utils/dateUtils';
 import { getStatusColor, getStatusName } from '@/utils/statusUtils';
 import { getPriorityColor, getPriorityName } from '@/utils/priorityUtils';
 

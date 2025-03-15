@@ -3,6 +3,13 @@
     <v-list-item-title>
       <strong>{{ comment.author.username }}</strong>
       <span class="comment-date">{{ formatDate(comment.createdAt) }}</span>
+      <span
+        v-if="
+          !isEqualCreateAndUpdateDates(comment.createdAt, comment.updatedAt)
+        "
+        class="comment-date"
+        >Изменено: {{ formatDate(comment.updatedAt) }}</span
+      >
     </v-list-item-title>
 
     <template v-if="isEditing">
@@ -46,7 +53,7 @@
 
 <script setup lang="ts">
 import { defineProps, ref } from 'vue';
-import { formatDate } from '@/utils/formatDate';
+import { formatDate, isEqualCreateAndUpdateDates } from '@/utils/dateUtils';
 import type { Comment, UpdateComment } from '@/types';
 
 const props = defineProps<{
