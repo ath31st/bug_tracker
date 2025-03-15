@@ -3,8 +3,10 @@ import customAxios from '@/config/axiosConfig';
 
 const COMMENTS_PREFIX = '/comments/';
 
-export const getComments = async (issueId: number): Promise<Comment[]> => {
-  const response = await customAxios.get(`${COMMENTS_PREFIX}${issueId}`);
+export const getCommentsByIssueId = async (
+  issueId: number,
+): Promise<Comment[]> => {
+  const response = await customAxios.get(`${COMMENTS_PREFIX}issue/${issueId}`);
   return response.data;
 };
 
