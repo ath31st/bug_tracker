@@ -4,8 +4,12 @@
       ID: {{ issue.id }} - {{ issue.title }}
     </v-card-title>
     <v-card-subtitle>
-      Создан: {{ formatDate(issue.createdAt) }} | Обновлен:
-      {{ formatDate(issue.updatedAt) }}
+      <span>Создан: {{ formatDate(issue.createdAt) }}</span>
+      <span
+        v-if="!isEqualCreateAndUpdateDates(issue.createdAt, issue.updatedAt)"
+      >
+        | Обновлен: {{ formatDate(issue.updatedAt) }}</span
+      >
     </v-card-subtitle>
     <v-card-text>
       <v-row>
@@ -78,7 +82,7 @@
 
 <script setup lang="ts">
 import { defineProps, reactive, ref } from 'vue';
-import { formatDate } from '@/utils/dateUtils';
+import { formatDate, isEqualCreateAndUpdateDates } from '@/utils/dateUtils';
 import { getStatusColor, getStatusName } from '@/utils/statusUtils';
 import { getPriorityColor, getPriorityName } from '@/utils/priorityUtils';
 import type { Issue, NewComment, Comment, UpdateComment } from '@/types';

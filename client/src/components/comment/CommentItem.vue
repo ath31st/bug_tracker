@@ -8,7 +8,7 @@
           !isEqualCreateAndUpdateDates(comment.createdAt, comment.updatedAt)
         "
         class="comment-date"
-        >Изменено: {{ formatDate(comment.updatedAt) }}</span
+        >Изменен: {{ formatDate(comment.updatedAt) }}</span
       >
     </v-list-item-title>
 
