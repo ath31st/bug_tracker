@@ -56,15 +56,15 @@
           </v-card-text>
 
           <v-card-actions class="d-flex justify-center">
-            <v-btn
-              color="primary"
+            <CommonButton
+              color="white"
               large
               :loading="loading"
               :disabled="!valid"
               @click="register"
             >
               Зарегистрироваться
-            </v-btn>
+            </CommonButton>
           </v-card-actions>
 
           <v-snackbar v-model="snackbar" :timeout="3000" color="error" top>
@@ -86,6 +86,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useUsersStore } from '@/stores/userStore';
+import CommonButton from '@/components/button/CommonButton.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();

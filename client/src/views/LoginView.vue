@@ -36,18 +36,19 @@
           </v-card-text>
 
           <v-card-actions class="d-flex flex-column justify-center">
-            <v-btn
-              color="primary"
+            <CommonButton
+              class="w-100"
+              color="white"
               large
               :loading="loading"
               :disabled="!valid"
               @click="login"
             >
               Войти
-            </v-btn>
-            <v-btn text to="/register" color="primary">
+            </CommonButton>
+            <CommonButton class="w-100" text to="/register" color="white">
               Нет аккаунта? Зарегистрируйтесь
-            </v-btn>
+            </CommonButton>
           </v-card-actions>
 
           <v-snackbar v-model="snackbar" :timeout="3000" color="error" top>
@@ -68,6 +69,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
+import CommonButton from '@/components/button/CommonButton.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
