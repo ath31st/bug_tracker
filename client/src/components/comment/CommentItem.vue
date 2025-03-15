@@ -19,14 +19,17 @@
             v-model="editedContent"
             variant="outlined"
             clearable
+            density="compact"
             hide-details="auto"
           ></v-text-field>
         </v-col>
-        <v-col cols="2">
-          <v-btn color="success" class="mr-2" @click="saveEdit"
-            >Сохранить</v-btn
+        <v-col cols="2" class="d-flex justify-end">
+          <v-btn variant="text" color="primary" @click="saveEdit"
+            ><v-icon>mdi-check</v-icon></v-btn
           >
-          <v-btn color="error" @click="cancelEdit">Отменить</v-btn>
+          <v-btn variant="text" color="error" @click="cancelEdit"
+            ><v-icon>mdi-cancel</v-icon></v-btn
+          >
         </v-col>
       </v-row>
     </template>
@@ -35,16 +38,10 @@
     </template>
 
     <template v-if="isAuthor && !isEditing" #append>
-      <v-btn
-        icon
-        variant="text"
-        color="primary"
-        @click="startEditing"
-        class="mr-2"
-      >
+      <v-btn variant="text" color="primary" @click="startEditing">
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
-      <v-btn icon variant="text" color="error" @click="handleDelete">
+      <v-btn variant="text" color="error" @click="handleDelete">
         <v-icon>mdi-delete</v-icon>
       </v-btn>
     </template>
