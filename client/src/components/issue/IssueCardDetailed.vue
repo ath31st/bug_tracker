@@ -56,24 +56,27 @@
         @update="handleUpdateComment"
       />
 
-      <v-row class="mt-2" align="center">
+      <v-row class="mt-2 mb-2" align="center">
         <v-col cols="10">
           <v-text-field
             v-model="comment"
             label="Добавить комментарий"
             variant="outlined"
             clearable
+            density="compact"
             hide-details="auto"
           ></v-text-field>
         </v-col>
         <v-col cols="2">
-          <v-btn
-            color="primary"
+          <CommonButton
+            class="w-100"
+            variant="outlined"
+            color="white"
             :disabled="!comment || comment.trim() === ''"
             @click="submitComment"
           >
             Отправить
-          </v-btn>
+          </CommonButton>
         </v-col>
       </v-row>
     </v-card-text>
@@ -89,6 +92,7 @@ import type { Issue, NewComment, Comment, UpdateComment } from '@/types';
 import CommentList from '@/components/comment/CommentList.vue';
 import { useCommentsStore } from '@/stores/commentStore';
 import { useAuthStore } from '@/stores/authStore';
+import CommonButton from '../button/CommonButton.vue';
 
 const commentsStore = useCommentsStore();
 const authStore = useAuthStore();

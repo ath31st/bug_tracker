@@ -24,4 +24,8 @@ defineProps<{
 .custom-btn {
   text-transform: none;
 }
+
+.custom-btn:disabled {
+  opacity: 0.4;
+}
 </style>
