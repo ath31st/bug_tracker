@@ -14,6 +14,7 @@ class AuthService:
             raise UnauthorizedException("Invalid username or password")
 
         access_token = create_access_token(
-            identity=str(user.id), additional_claims={"username": user.username}
+            identity=str(user.id),
+            additional_claims={"username": user.username, "id": user.id},
         )
         return {"access_token": access_token}
