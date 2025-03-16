@@ -75,7 +75,7 @@ def create_issue_routes(issue_service: IssueService):
             update_data = new_issue_schema.load(data, partial=True)
 
             issue = issue_service.update_issue(issue_id, **update_data)
-            return jsonify(issue_schema.dump(issue)), 200
+            return jsonify(full_issue_schema.dump(issue)), 200
         except (ValueError, ValidationError, IssueServiceException) as e:
             return (
                 jsonify({"error": str(e)}),
