@@ -131,13 +131,6 @@ const register = async () => {
       password: credentials.value.password,
     });
 
-    snackbarStore.show('Регистрация выполнена успешно!', {
-      color: 'success',
-      timeout: 2000,
-    });
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
     router.push('/');
   } catch (error: unknown) {
     console.error(error);

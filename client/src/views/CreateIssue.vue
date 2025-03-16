@@ -71,12 +71,6 @@ const newIssue = ref<NewIssue>({
 const submitIssue = async () => {
   try {
     await issuesStore.createIssue(newIssue.value);
-    snackbarStore.show('Заявка успешно создана!', {
-      color: 'success',
-      timeout: 2000,
-    });
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     router.push('/');
   } catch (error) {
