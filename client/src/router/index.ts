@@ -5,6 +5,7 @@ import { useAuthStore } from '@/stores/authStore';
 import RegisterView from '@/views/RegisterView.vue';
 import IssueView from '@/views/IssueView.vue';
 import AboutView from '@/views/AboutView.vue';
+import CreateIssue from '@/views/CreateIssue.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,6 +20,12 @@ const router = createRouter({
       path: '/about',
       name: 'about',
       component: AboutView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/new-issue',
+      name: 'New Issue',
+      component: CreateIssue,
       meta: { requiresAuth: true },
     },
     {
