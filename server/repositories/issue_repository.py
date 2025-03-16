@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlalchemy import exists, select
+from sqlalchemy import exists, or_, select
 from models import Issue, Priority, IssueStatus, Comment
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import joinedload, subqueryload
@@ -113,8 +113,34 @@ class IssueRepository:
         self.db.session.commit()
         return True
 
+    def assign_issue(self, issue_id: int, assignee_id: int) -> Optional[Issue]:
+        issue = self.db.session.get(Issue, issue_id)
+        if not issue:
+            return None
+        issue.assignee_id = assignee_id
+        self.db.session.commit()
+        return issue
+
     def check_if_issue_exists_and_not_closed(self, issue_id: int) -> bool:
         query = select(
             exists().where(Issue.id == issue_id, Issue.status != IssueStatus.CLOSED)
+        )
+        return self.db.session.execute(query).scalar()
+
+    def check_if_issue_assigned(self, issue_id: int) -> bool:
+        query = select(exists().where(Issue.id == issue_id, Issue.assignee_id != None))
+        return self.db.session.execute(query).scalar()
+
+    def check_if_user_is_assignee_or_reporter_of_issue(
+        self, issue_id: int, user_id: int
+    ) -> bool:
+        query = select(
+            exists().where(
+                Issue.id == issue_id,
+                or_(
+                    Issue.assignee_id == user_id,
+                    Issue.reporter_id == user_id,
+                ),
+            )
         )
         return self.db.session.execute(query).scalar()

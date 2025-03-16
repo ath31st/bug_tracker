@@ -105,5 +105,30 @@ class IssueService:
         except Exception as e:
             raise ValueError(f"Issue deletion failed: {str(e)}")
 
+    def assign_issue(self, issue_id: int, assignee_id: int) -> Issue:
+        try:
+            if not self.check_if_issue_exists_and_not_closed(issue_id):
+                raise ValueError(f"Issue with ID {issue_id} not found")
+            if self.check_if_issue_assigned(issue_id):
+                raise ValueError(f"Issue with ID {issue_id} is already assigned")
+            updated_issue = self.repository.assign_issue(issue_id, assignee_id)
+            if not updated_issue:
+                raise ValueError(f"Issue with ID {issue_id} not found")
+            return updated_issue
+        except IntegrityError:
+            raise ValueError("Issue assignment failed due to integrity constraint")
+        except Exception as e:
+            raise ValueError(f"Issue assignment failed: {str(e)}")
+
     def check_if_issue_exists_and_not_closed(self, issue_id: int) -> bool:
         return self.repository.check_if_issue_exists_and_not_closed(issue_id)
+
+    def check_if_user_is_assignee_or_reporter_of_issue(
+        self, issue_id: int, user_id: int
+    ) -> bool:
+        return self.repository.check_if_user_is_assignee_or_reporter_of_issue(
+            issue_id, user_id
+        )
+
+    def check_if_issue_assigned(self, issue_id: int) -> bool:
+        return self.repository.check_if_issue_assigned(issue_id)

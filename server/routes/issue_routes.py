@@ -91,4 +91,15 @@ def create_issue_routes(issue_service: IssueService):
         except Exception as e:
             return jsonify({"error": "Internal Server Error"}), 500
 
+    @issue_routes.route("/<int:issue_id>/assign", methods=["PATCH"])
+    def assign_issue(issue_id):
+        try:
+            current_user_id = int(get_jwt_identity())
+            issue_service.assign_issue(issue_id, current_user_id)
+            return "", 204
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 404
+        except Exception as e:
+            return jsonify({"error": "Internal Server Error"}), 500
+
     return issue_routes
