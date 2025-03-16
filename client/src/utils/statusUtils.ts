@@ -27,3 +27,5 @@ export const getStatusName = (status: string) => {
       return 'Неизвестно';
   }
 };
+
+export const statusOrder = ['NEW', 'IN_PROGRESS', 'RESOLVED', 'CLOSED'];
