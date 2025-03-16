@@ -51,14 +51,12 @@
             </CommonButton>
           </v-card-actions>
 
-          <v-snackbar v-model="snackbar" :timeout="3000" color="error" top>
-            {{ errorMessage }}
-            <template v-slot:actions>
-              <v-btn text @click="snackbar = false">
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-            </template>
-          </v-snackbar>
+          <CommonSnackbar
+            v-model="snackbarStore.isVisible"
+            :message="snackbarStore.message"
+            :timeout="snackbarStore.timeout"
+            :color="snackbarStore.color"
+          />
         </v-card>
       </v-col>
     </v-row>
@@ -69,15 +67,16 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
+import { useSnackbarStore } from '@/stores/snackbarStore';
 import CommonButton from '@/components/button/CommonButton.vue';
+import CommonSnackbar from '@/components/CommonSnackbar.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
+const snackbarStore = useSnackbarStore();
 const form = ref(null);
 const valid = ref(false);
 const loading = ref(false);
-const snackbar = ref(false);
-const errorMessage = ref('');
 
 const credentials = ref({
   username: '',
@@ -94,11 +93,20 @@ const login = async () => {
   try {
     loading.value = true;
     await authStore.loginUser(credentials.value);
+    snackbarStore.show('Вход выполнен успешно!', {
+      color: 'success',
+      timeout: 2000,
+    });
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     router.push('/');
   } catch (error: unknown) {
     console.error(error);
-    errorMessage.value = 'Ошибка входа. Проверьте данные.';
-    snackbar.value = true;
+    snackbarStore.show('Ошибка входа. Проверьте данные.', {
+      color: 'error',
+      timeout: 3000,
+    });
   } finally {
     loading.value = false;
   }
