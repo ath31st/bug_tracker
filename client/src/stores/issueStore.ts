@@ -165,6 +165,7 @@ export const useIssuesStore = defineStore('issues', () => {
     createIssue,
     updateIssue,
     deleteIssue,
+    assignIssue,
     setPage,
     setElementsPerPage,
   };
