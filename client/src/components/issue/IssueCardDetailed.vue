@@ -143,13 +143,11 @@ const handleUpdateComment = async (
 };
 
 const handleDeleteComment = async (commentId: number) => {
-  if (confirm('Удалить комментарий?')) {
-    await commentsStore.deleteComment(commentId);
-    localComments.splice(
-      localComments.findIndex((c) => c.id === commentId),
-      1,
-    );
-  }
+  await commentsStore.deleteComment(commentId);
+  localComments.splice(
+    localComments.findIndex((c) => c.id === commentId),
+    1,
+  );
 };
 </script>
 

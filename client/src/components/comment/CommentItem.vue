@@ -8,8 +8,9 @@
           !isEqualCreateAndUpdateDates(comment.createdAt, comment.updatedAt)
         "
         class="comment-date"
-        >Изменен: {{ formatDate(comment.updatedAt) }}</span
       >
+        Изменен: {{ formatDate(comment.updatedAt) }}
+      </span>
     </v-list-item-title>
 
     <template v-if="isEditing">
@@ -24,12 +25,12 @@
           ></v-text-field>
         </v-col>
         <v-col cols="2" class="d-flex justify-end">
-          <v-btn variant="text" color="primary" @click="saveEdit"
-            ><v-icon>mdi-check</v-icon></v-btn
-          >
-          <v-btn variant="text" color="error" @click="cancelEdit"
-            ><v-icon>mdi-cancel</v-icon></v-btn
-          >
+          <v-btn variant="text" color="primary" @click="saveEdit">
+            <v-icon>mdi-check</v-icon>
+          </v-btn>
+          <v-btn variant="text" color="error" @click="cancelEdit">
+            <v-icon>mdi-cancel</v-icon>
+          </v-btn>
         </v-col>
       </v-row>
     </template>
@@ -41,10 +42,21 @@
       <v-btn variant="text" color="primary" @click="startEditing">
         <v-icon>mdi-pencil</v-icon>
       </v-btn>
-      <v-btn variant="text" color="error" @click="handleDelete">
+      <v-btn variant="text" color="error" @click="isConfirmDialogOpen = true">
         <v-icon>mdi-delete</v-icon>
       </v-btn>
     </template>
+
+    <ConfirmDialog
+      v-model="isConfirmDialogOpen"
+      title="Удаление комментария"
+      message="Вы уверены, что хотите удалить этот комментарий?"
+      confirm-text="Удалить"
+      cancel-text="Отмена"
+      confirm-color="primary"
+      cancel-color="error"
+      @confirm="confirmDelete"
+    />
   </v-list-item>
 </template>
 
@@ -52,6 +64,7 @@
 import { defineProps, ref } from 'vue';
 import { formatDate, isEqualCreateAndUpdateDates } from '@/utils/dateUtils';
 import type { Comment, UpdateComment } from '@/types';
+import ConfirmDialog from '@/components/modal/ConfirmDialog.vue';
 
 const props = defineProps<{
   comment: Comment;
@@ -65,6 +78,7 @@ const emit = defineEmits<{
 
 const isEditing = ref(false);
 const editedContent = ref(props.comment.content);
+const isConfirmDialogOpen = ref(false);
 
 const startEditing = () => {
   editedContent.value = props.comment.content;
@@ -72,6 +86,8 @@ const startEditing = () => {
 };
 
 const saveEdit = () => {
+  if (!editedContent.value.trim()) return;
+
   const updatedComment: UpdateComment = {
     content: editedContent.value.trim(),
   };
@@ -84,7 +100,7 @@ const cancelEdit = () => {
   editedContent.value = props.comment.content;
 };
 
-const handleDelete = () => {
+const confirmDelete = () => {
   emit('delete', props.comment.id);
 };
 </script>
