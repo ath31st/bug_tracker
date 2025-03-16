@@ -7,6 +7,19 @@ export const useUsersStore = defineStore('users', () => {
   const loading = ref(false);
   const error = ref<string | null>(null);
 
+  async function fetchUser(userId: number) {
+    try {
+      loading.value = true;
+      error.value = null;
+      return await userApi.getUser(userId);
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'Failed to fetch user';
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  }
+
   async function createUser(user: NewUser) {
     try {
       loading.value = true;
@@ -54,6 +67,7 @@ export const useUsersStore = defineStore('users', () => {
     loading,
     error,
 
+    fetchUser,
     createUser,
     updateUser,
     deleteUser,
