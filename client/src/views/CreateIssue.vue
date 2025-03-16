@@ -37,6 +37,13 @@
           Создать заявку
         </CommonButton>
       </v-form>
+
+      <CommonSnackbar
+        v-model="snackbarStore.isVisible"
+        :message="snackbarStore.message"
+        :timeout="snackbarStore.timeout"
+        :color="snackbarStore.color"
+      />
     </v-card>
   </v-container>
 </template>
@@ -44,6 +51,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useIssuesStore } from '@/stores/issueStore';
+import { useSnackbarStore } from '@/stores/snackbarStore';
+import CommonSnackbar from '@/components/CommonSnackbar.vue';
 import type { NewIssue } from '@/types';
 import CommonButton from '@/components/button/CommonButton.vue';
 import { getPriorityName, priorityOrder } from '@/utils/priorityUtils';
@@ -51,6 +60,7 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const issuesStore = useIssuesStore();
+const snackbarStore = useSnackbarStore();
 
 const newIssue = ref<NewIssue>({
   title: '',
@@ -61,10 +71,20 @@ const newIssue = ref<NewIssue>({
 const submitIssue = async () => {
   try {
     await issuesStore.createIssue(newIssue.value);
+    snackbarStore.show('Заявка успешно создана!', {
+      color: 'success',
+      timeout: 2000,
+    });
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     router.push('/');
   } catch (error) {
     console.error('Ошибка при создании issue:', error);
+    snackbarStore.show('Ошибка при создании заявки.', {
+      color: 'error',
+      timeout: 3000,
+    });
   }
 };
 </script>
