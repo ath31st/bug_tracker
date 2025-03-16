@@ -1,7 +1,7 @@
 <template>
   <v-container>
+    <IssueActionBar />
     <IssueListHeader />
-
     <SpinnerLoader v-if="issuesStore.loading" />
 
     <v-alert v-if="issuesStore.error" type="error" dismissible class="my-4">
@@ -27,6 +27,7 @@
       <v-row align="center" class="my-4">
         <v-col cols="2">
           <v-select
+            variant="outlined"
             v-model="itemsPerPage"
             :items="[5, 10, 20, 50]"
             label="Эл. на странице"
@@ -58,6 +59,7 @@ import { useIssuesStore } from '@/stores/issueStore';
 import IssueListHeader from '@/components/issue/IssueListHeader.vue';
 import SpinnerLoader from '@/components/loader/SpinnerLoader.vue';
 import IssueList from '@/components/issue/IssueList.vue';
+import IssueActionBar from '@/components/issue/IssueActionBar.vue';
 
 const issuesStore = useIssuesStore();
 const itemsPerPage = ref(issuesStore.elementsPerPage);
