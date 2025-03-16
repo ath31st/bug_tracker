@@ -5,7 +5,8 @@
     :loading="loading"
     :disabled="disabled"
     class="custom-btn"
-    @click="$emit('click')"
+    :type="type"
+    @click="$emit('click', $event)"
   >
     <slot />
   </v-btn>
@@ -17,6 +18,11 @@ defineProps<{
   variant?: 'flat' | 'outlined' | 'text' | 'elevated' | 'tonal';
   loading?: boolean;
   disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+}>();
+
+defineEmits<{
+  (e: 'click', event: Event): void;
 }>();
 </script>
 
