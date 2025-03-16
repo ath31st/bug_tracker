@@ -62,7 +62,6 @@ export interface UpdateIssue {
   description?: string;
   status?: string;
   priority?: string;
-  assigneeId?: number;
 }
 
 // comment types
