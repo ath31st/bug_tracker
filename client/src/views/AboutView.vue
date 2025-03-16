@@ -9,7 +9,7 @@
             О проекте: Bug Tracker
           </v-card-title>
           <v-card-subtitle class="text-h6 mt-2">
-            Простое приложение для фиксации и отслеживания багов
+            Простое приложение для фиксирования и отслеживания багов
           </v-card-subtitle>
           <v-divider class="my-4"></v-divider>
           <v-card-text>
