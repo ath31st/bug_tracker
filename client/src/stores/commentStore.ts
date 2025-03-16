@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import type { Comment, NewComment, UpdateComment } from '@/types';
 import * as commentApi from '@/api/commentApi';
 

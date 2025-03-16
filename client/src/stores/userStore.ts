@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
-import type { User, NewUser, UpdateUser } from '@/types';
+import { ref } from 'vue';
+import type { NewUser, UpdateUser } from '@/types';
 import * as userApi from '@/api/userApi';
 
 export const useUsersStore = defineStore('users', () => {
@@ -11,7 +11,7 @@ export const useUsersStore = defineStore('users', () => {
     try {
       loading.value = true;
       error.value = null;
-      const response = userApi.createUser(user);
+      await userApi.createUser(user);
     } catch (err) {
       error.value =
         err instanceof Error ? err.message : 'Failed to create user';
