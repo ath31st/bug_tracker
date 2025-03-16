@@ -87,6 +87,7 @@ import { useUsersStore } from '@/stores/userStore';
 import CommonButton from '@/components/button/CommonButton.vue';
 import { useSnackbarStore } from '@/stores/snackbarStore';
 import CommonSnackbar from '@/components/CommonSnackbar.vue';
+import type { NewUser } from '@/types';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -117,7 +118,14 @@ const rules = {
 const register = async () => {
   try {
     loading.value = true;
-    await userStore.createUser(credentials.value);
+
+    const newUser: NewUser = {
+      username: credentials.value.username,
+      email: credentials.value.email,
+      password: credentials.value.password,
+    };
+
+    await userStore.createUser(newUser);
     await authStore.loginUser({
       username: credentials.value.username,
       password: credentials.value.password,
