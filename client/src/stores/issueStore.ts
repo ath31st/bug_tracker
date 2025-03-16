@@ -122,6 +122,20 @@ export const useIssuesStore = defineStore('issues', () => {
     }
   }
 
+  async function assignIssue(issueId: number) {
+    try {
+      loading.value = true;
+      error.value = null;
+      await issueApi.assignIssue(issueId);
+    } catch (err) {
+      error.value =
+        err instanceof Error ? err.message : 'Failed to assign issue';
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  }
+
   async function setPage(page: number) {
     if (page >= 1 && page <= totalPages.value) {
       await fetchIssues(page);
