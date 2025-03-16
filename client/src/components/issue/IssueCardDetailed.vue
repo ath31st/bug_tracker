@@ -143,7 +143,11 @@
             <v-col cols="12" class="pt-2">
               <CommonButton
                 variant="outlined"
-                color="primary"
+                :disabled="
+                  localIssue.status == IssueStatus.CLOSED ||
+                  localIssue.status == IssueStatus.RESOLVED
+                "
+                color="white"
                 class="w-100"
                 @click="assignToMe"
               >
@@ -212,7 +216,13 @@ import {
   getPriorityName,
   priorityOrder,
 } from '@/utils/priorityUtils';
-import type { Issue, NewComment, UpdateComment, UpdateIssue } from '@/types';
+import {
+  IssueStatus,
+  type Issue,
+  type NewComment,
+  type UpdateComment,
+  type UpdateIssue,
+} from '@/types';
 import CommentList from '@/components/comment/CommentList.vue';
 import { useCommentsStore } from '@/stores/commentStore';
 import { useAuthStore } from '@/stores/authStore';
