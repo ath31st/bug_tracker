@@ -100,8 +100,8 @@ def create_issue_routes(issue_service: IssueService):
     def assign_issue(issue_id):
         try:
             current_user_id = int(get_jwt_identity())
-            issue_service.assign_issue(issue_id, current_user_id)
-            return "", 204
+            updated_issue = issue_service.assign_issue(issue_id, current_user_id)
+            return jsonify(full_issue_schema.dump(updated_issue)), 200
         except IssueServiceException as e:
             return jsonify({"error": str(e)}), 400
         except ValueError as e:
