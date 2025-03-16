@@ -27,3 +27,5 @@ export const getPriorityColor = (priority: string) => {
       return 'grey';
   }
 };
+
+export const priorityOrder = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
