@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row class="px-5">
     <v-col cols="1" class="header-col">
       <span>ID</span>
     </v-col>

@@ -8,12 +8,12 @@
         <v-col cols="2">
           <span>{{ issue.title }}</span>
         </v-col>
-        <v-col cols="1" class="d-flex justify-center align-center">
+        <v-col cols="1">
           <v-chip :color="getStatusColor(issue.status)" size="small">
             {{ getStatusName(issue.status) }}
           </v-chip>
         </v-col>
-        <v-col cols="1" class="d-flex justify-center align-center">
+        <v-col cols="1">
           <v-chip :color="getPriorityColor(issue.priority)" size="small">
             {{ getPriorityName(issue.priority) }}
           </v-chip>
@@ -44,4 +44,10 @@ defineProps<{
 }>();
 </script>
 
-<style scoped></style>
+<style scoped>
+.v-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>
