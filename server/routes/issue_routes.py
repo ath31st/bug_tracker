@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from dto import Page
+from exceptions import IssueServiceException
 from services import IssueService
 from validations.issue import IssueSchema, NewIssueSchema, FullIssueSchema
 from marshmallow import ValidationError
@@ -38,7 +39,7 @@ def create_issue_routes(issue_service: IssueService):
 
             issue = issue_service.create_issue(**issue_data)
             return jsonify(issue_schema.dump(issue)), 201
-        except (ValueError, ValidationError) as e:
+        except (ValueError, ValidationError, IssueServiceException) as e:
             return jsonify({"error": str(e)}), 400
         except Exception as e:
             return jsonify({"error": "Internal Server Error: " + str(e)}), 500
@@ -60,6 +61,8 @@ def create_issue_routes(issue_service: IssueService):
         try:
             issue = issue_service.get_issue_by_id(issue_id)
             return jsonify(full_issue_schema.dump(issue)), 200
+        except IssueServiceException as e:
+            return jsonify({"error": str(e)}), 400
         except ValueError as e:
             return jsonify({"error": str(e)}), 404
         except Exception as e:
@@ -73,7 +76,7 @@ def create_issue_routes(issue_service: IssueService):
 
             issue = issue_service.update_issue(issue_id, **update_data)
             return jsonify(issue_schema.dump(issue)), 200
-        except (ValueError, ValidationError) as e:
+        except (ValueError, ValidationError, IssueServiceException) as e:
             return (
                 jsonify({"error": str(e)}),
                 400,
@@ -86,6 +89,8 @@ def create_issue_routes(issue_service: IssueService):
         try:
             issue_service.delete_issue(issue_id)
             return "", 204
+        except IssueServiceException as e:
+            return jsonify({"error": str(e)}), 400
         except ValueError as e:
             return jsonify({"error": str(e)}), 404
         except Exception as e:
@@ -97,6 +102,8 @@ def create_issue_routes(issue_service: IssueService):
             current_user_id = int(get_jwt_identity())
             issue_service.assign_issue(issue_id, current_user_id)
             return "", 204
+        except IssueServiceException as e:
+            return jsonify({"error": str(e)}), 400
         except ValueError as e:
             return jsonify({"error": str(e)}), 404
         except Exception as e:

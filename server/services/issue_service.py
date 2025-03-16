@@ -1,3 +1,4 @@
+from exceptions import IssueServiceException
 from repositories import IssueRepository
 from typing import Optional
 from models import Issue, IssueStatus, Priority
@@ -18,7 +19,7 @@ class IssueService:
         status: IssueStatus = IssueStatus.NEW,
     ) -> Issue:
         if not title or not reporter_id or not priority:
-            raise ValueError("Title, priority and reporter ID are required")
+            raise IssueServiceException("Title, priority and reporter ID are required")
 
         try:
             issue = self.repository.create(
@@ -28,7 +29,7 @@ class IssueService:
         except IntegrityError:
             raise ValueError("Issue creation failed due to integrity constraint")
         except Exception as e:
-            raise ValueError(f"Issue creation failed: {str(e)}")
+            raise IssueServiceException(f"Issue creation failed: {str(e)}")
 
     def get_issue_by_id(self, issue_id: int) -> Issue:
         issue = self.repository.find_by_id(issue_id)
@@ -94,7 +95,7 @@ class IssueService:
         except IntegrityError:
             raise ValueError("Issue update failed due to integrity constraint")
         except Exception as e:
-            raise ValueError(f"Issue update failed: {str(e)}")
+            raise IssueServiceException(f"Issue update failed: {str(e)}")
 
     def delete_issue(self, issue_id: int) -> None:
         try:
@@ -103,14 +104,16 @@ class IssueService:
                     f"Issue with ID {issue_id} not found or could not be deleted"
                 )
         except Exception as e:
-            raise ValueError(f"Issue deletion failed: {str(e)}")
+            raise IssueServiceException(f"Issue deletion failed: {str(e)}")
 
     def assign_issue(self, issue_id: int, assignee_id: int) -> Issue:
         try:
             if not self.check_if_issue_exists_and_not_closed(issue_id):
                 raise ValueError(f"Issue with ID {issue_id} not found")
             if self.check_if_issue_assigned(issue_id):
-                raise ValueError(f"Issue with ID {issue_id} is already assigned")
+                raise IssueServiceException(
+                    f"Issue with ID {issue_id} is already assigned"
+                )
             updated_issue = self.repository.assign_issue(issue_id, assignee_id)
             if not updated_issue:
                 raise ValueError(f"Issue with ID {issue_id} not found")
@@ -118,7 +121,7 @@ class IssueService:
         except IntegrityError:
             raise ValueError("Issue assignment failed due to integrity constraint")
         except Exception as e:
-            raise ValueError(f"Issue assignment failed: {str(e)}")
+            raise IssueServiceException(f"Issue assignment failed: {str(e)}")
 
     def check_if_issue_exists_and_not_closed(self, issue_id: int) -> bool:
         return self.repository.check_if_issue_exists_and_not_closed(issue_id)
