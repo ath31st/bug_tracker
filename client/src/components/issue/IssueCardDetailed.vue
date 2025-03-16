@@ -100,6 +100,13 @@
         </v-col>
       </v-row>
     </v-card-text>
+
+    <CommonSnackbar
+      v-model="snackbarStore.isVisible"
+      :message="snackbarStore.message"
+      :timeout="snackbarStore.timeout"
+      :color="snackbarStore.color"
+    />
   </v-card>
   <SpinnerLoader v-else />
 </template>
@@ -116,10 +123,13 @@ import { useAuthStore } from '@/stores/authStore';
 import { useIssuesStore } from '@/stores/issueStore';
 import CommonButton from '../button/CommonButton.vue';
 import SpinnerLoader from '@/components/loader/SpinnerLoader.vue';
+import { useSnackbarStore } from '@/stores/snackbarStore';
+import CommonSnackbar from '../CommonSnackbar.vue';
 
 const commentsStore = useCommentsStore();
 const issueStore = useIssuesStore();
 const authStore = useAuthStore();
+const snackbarStore = useSnackbarStore();
 
 const props = defineProps<{
   issueId: number;
@@ -162,8 +172,17 @@ const submitComment = async () => {
       localIssue.value.id,
     );
     localIssue.value.comments = updatedComments;
+
+    snackbarStore.show('Комментарий успешно добавлен!', {
+      color: 'success',
+      timeout: 2000,
+    });
   } catch (err) {
     console.error(err);
+    snackbarStore.show('Ошибка при добавлении комментария.', {
+      color: 'error',
+      timeout: 3000,
+    });
   } finally {
     comment.value = '';
   }
@@ -180,8 +199,17 @@ const handleUpdateComment = async (
       (c) => c.id === commentId,
     );
     if (index !== -1) localIssue.value!.comments[index] = updatedComment;
+
+    snackbarStore.show('Комментарий успешно изменен!', {
+      color: 'success',
+      timeout: 2000,
+    });
   } catch (err) {
     console.error(err);
+    snackbarStore.show('Ошибка при изменении комментария.', {
+      color: 'error',
+      timeout: 3000,
+    });
   }
 };
 
@@ -191,8 +219,17 @@ const handleDeleteComment = async (commentId: number) => {
     localIssue.value!.comments = localIssue.value!.comments.filter(
       (c) => c.id !== commentId,
     );
+
+    snackbarStore.show('Комментарий успешно удален!', {
+      color: 'success',
+      timeout: 2000,
+    });
   } catch (err) {
     console.error(err);
+    snackbarStore.show('Ошибка при удалении комментария.', {
+      color: 'error',
+      timeout: 3000,
+    });
   }
 };
 
@@ -202,8 +239,17 @@ const assignToMe = async () => {
   try {
     const updatedIssue = await issueStore.assignIssue(localIssue.value.id);
     localIssue.value = updatedIssue;
+
+    snackbarStore.show('Задача успешно принята в работу!', {
+      color: 'success',
+      timeout: 2000,
+    });
   } catch (err) {
     console.error('Ошибка при назначении задачи:', err);
+    snackbarStore.show('Ошибка при назначении задачи.', {
+      color: 'error',
+      timeout: 3000,
+    });
   }
 };
 </script>
