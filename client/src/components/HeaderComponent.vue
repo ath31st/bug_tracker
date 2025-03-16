@@ -1,7 +1,9 @@
 <template>
   <v-app-bar app color="primary">
     <v-toolbar-title>
-      <h3>Bug tracker</h3>
+      <router-link to="/" class="text-decoration-none" style="color: inherit">
+        <h3>Bug tracker</h3>
+      </router-link>
     </v-toolbar-title>
     <v-spacer></v-spacer>
 
