@@ -26,7 +26,14 @@
           label="Приоритет"
           required
         />
-        <CommonButton class="w-100" type="submit" variant="outlined">
+        <CommonButton
+          :disabled="
+            !newIssue.title || !newIssue.description || !newIssue.priority
+          "
+          class="w-100"
+          type="submit"
+          variant="outlined"
+        >
           Создать заявку
         </CommonButton>
       </v-form>
