@@ -32,24 +32,23 @@
                 variant="outlined"
                 :rules="[rules.required]"
               />
+              <v-card-actions class="d-flex flex-column justify-center">
+                <CommonButton
+                  class="w-100"
+                  color="white"
+                  large
+                  :loading="loading"
+                  :disabled="!valid"
+                  type="submit"
+                >
+                  Войти
+                </CommonButton>
+                <CommonButton class="w-100" text to="/register" color="white">
+                  Нет аккаунта? Зарегистрируйтесь
+                </CommonButton>
+              </v-card-actions>
             </v-form>
           </v-card-text>
-
-          <v-card-actions class="d-flex flex-column justify-center">
-            <CommonButton
-              class="w-100"
-              color="white"
-              large
-              :loading="loading"
-              :disabled="!valid"
-              @click="login"
-            >
-              Войти
-            </CommonButton>
-            <CommonButton class="w-100" text to="/register" color="white">
-              Нет аккаунта? Зарегистрируйтесь
-            </CommonButton>
-          </v-card-actions>
 
           <CommonSnackbar
             v-model="snackbarStore.isVisible"
@@ -93,7 +92,6 @@ const login = async () => {
   try {
     loading.value = true;
     await authStore.loginUser(credentials.value);
-
     router.push('/');
   } catch (error: unknown) {
     console.error(error);

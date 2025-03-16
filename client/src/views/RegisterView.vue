@@ -52,20 +52,19 @@
                 variant="outlined"
                 :rules="[rules.required, rules.matchPassword]"
               />
+              <v-card-actions class="d-flex justify-center">
+                <CommonButton
+                  color="white"
+                  large
+                  :loading="loading"
+                  :disabled="!valid"
+                  type="submit"
+                >
+                  Зарегистрироваться
+                </CommonButton>
+              </v-card-actions>
             </v-form>
           </v-card-text>
-
-          <v-card-actions class="d-flex justify-center">
-            <CommonButton
-              color="white"
-              large
-              :loading="loading"
-              :disabled="!valid"
-              @click="register"
-            >
-              Зарегистрироваться
-            </CommonButton>
-          </v-card-actions>
 
           <CommonSnackbar
             v-model="snackbarStore.isVisible"
