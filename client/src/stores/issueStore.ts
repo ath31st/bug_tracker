@@ -122,11 +122,18 @@ export const useIssuesStore = defineStore('issues', () => {
     }
   }
 
-  async function assignIssue(issueId: number) {
+  async function assignIssue(issueId: number): Promise<Issue> {
     try {
       loading.value = true;
       error.value = null;
-      await issueApi.assignIssue(issueId);
+      const updatedIssue = await issueApi.assignIssue(issueId);
+      const index = issues.value.findIndex((i) => i.id === issueId);
+      if (index !== -1) {
+        issues.value[index] = updatedIssue;
+      } else {
+        issues.value.push(updatedIssue);
+      }
+      return updatedIssue;
     } catch (err) {
       error.value =
         err instanceof Error ? err.message : 'Failed to assign issue';

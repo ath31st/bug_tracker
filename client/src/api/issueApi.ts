@@ -38,6 +38,7 @@ export const deleteIssue = async (issueId: number): Promise<void> => {
   await customAxios.delete(`${ISSUES_PREFIX}${issueId}`);
 };
 
-export const assignIssue = async (issueId: number): Promise<void> => {
-  await customAxios.patch(`${ISSUES_PREFIX}${issueId}/assign`);
+export const assignIssue = async (issueId: number): Promise<Issue> => {
+  const response = await customAxios.patch(`${ISSUES_PREFIX}${issueId}/assign`);
+  return response.data;
 };
