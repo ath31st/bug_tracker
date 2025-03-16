@@ -113,11 +113,14 @@ class IssueRepository:
         self.db.session.commit()
         return True
 
-    def assign_issue(self, issue_id: int, assignee_id: int) -> Optional[Issue]:
+    def assign_issue(
+        self, issue_id: int, assignee_id: int, status: IssueStatus
+    ) -> Optional[Issue]:
         issue = self.db.session.get(Issue, issue_id)
         if not issue:
             return None
         issue.assignee_id = assignee_id
+        issue.status = status
         self.db.session.commit()
         return issue
 

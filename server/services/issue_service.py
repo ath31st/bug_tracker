@@ -114,7 +114,10 @@ class IssueService:
                 raise IssueServiceException(
                     f"Issue with ID {issue_id} is already assigned"
                 )
-            updated_issue = self.repository.assign_issue(issue_id, assignee_id)
+            in_progress_status = IssueStatus.IN_PROGRESS
+            updated_issue = self.repository.assign_issue(
+                issue_id, assignee_id, in_progress_status
+            )
             if not updated_issue:
                 raise ValueError(f"Issue with ID {issue_id} not found")
             return updated_issue
