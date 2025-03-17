@@ -6,11 +6,15 @@ const ISSUES_PREFIX = '/issues/';
 export const getIssues = async (
   page: number,
   elementsPerPage: number,
+  sortKey: string,
+  sortDirection: string,
 ): Promise<Page<Issue>> => {
   const response = await customAxios.get(ISSUES_PREFIX, {
     params: {
       page: page,
       elementsPerPage: elementsPerPage,
+      sortKey: sortKey,
+      sortDirection: sortDirection,
     },
   });
   return response.data;
