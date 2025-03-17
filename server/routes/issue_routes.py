@@ -51,9 +51,16 @@ def create_issue_routes(issue_service: IssueService):
             per_page = request.args.get("elementsPerPage", 10, type=int)
             sort_key = request.args.get("sortKey", "createdAt", type=str)
             sort_direction = request.args.get("sortDirection", "desc", type=str)
+            filter_by_assignee_id = request.args.get("assigneeId", None, type=int)
+            filter_by_reporter_id = request.args.get("reporterId", None, type=int)
 
             pageIssues = issue_service.get_all_issues_paginated(
-                page, per_page, sort_key, sort_direction
+                page,
+                per_page,
+                sort_key,
+                sort_direction,
+                filter_by_assignee_id,
+                filter_by_reporter_id,
             )
 
             return jsonify(pageIssues.to_dict(issue_schema)), 200

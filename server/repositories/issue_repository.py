@@ -49,11 +49,19 @@ class IssueRepository:
         per_page: int = 10,
         sort_key: str = "id",
         sort_direction: str = "asc",
+        assignee_id: Optional[int] = None,
+        reporter_id: Optional[int] = None,
     ) -> list[Issue]:
         query = self.db.session.query(Issue).options(
             joinedload(Issue.reporter),
             joinedload(Issue.assignee),
         )
+
+        if assignee_id:
+            query = query.filter(Issue.assignee_id == assignee_id)
+
+        if reporter_id:
+            query = query.filter(Issue.reporter_id == reporter_id)
 
         direction = asc if sort_direction == "asc" else desc
         sort_column = getattr(Issue, sort_key, Issue.id)

@@ -44,11 +44,22 @@ class IssueService:
         return len(self.get_all_issues())
 
     def get_all_issues_paginated(
-        self, page: int, elements_per_page: int, sort_key: str, sort_direction: str
+        self,
+        page: int,
+        elements_per_page: int,
+        sort_key: str,
+        sort_direction: str,
+        assignee_id: Optional[int] = None,
+        reporter_id: Optional[int] = None,
     ) -> Page[Issue]:
         issues = (
             self.repository.get_all_paginated(
-                page, elements_per_page, sort_key, sort_direction
+                page,
+                elements_per_page,
+                sort_key,
+                sort_direction,
+                assignee_id,
+                reporter_id,
             )
             or []
         )
