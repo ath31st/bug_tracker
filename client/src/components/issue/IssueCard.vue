@@ -15,7 +15,10 @@
         </v-col>
         <v-col cols="1">
           <v-chip :color="getPriorityColor(issue.priority)" size="small">
-            {{ getPriorityName(issue.priority) }}
+            <v-icon small>{{ getPriorityIcon(issue.priority) }}</v-icon>
+            <v-tooltip activator="parent" location="top">
+              {{ getPriorityName(issue.priority) }}
+            </v-tooltip>
           </v-chip>
         </v-col>
         <v-col cols="2">
@@ -37,7 +40,11 @@ import { defineProps } from 'vue';
 import type { Issue } from '@/types';
 import { formatDate } from '@/utils/dateUtils';
 import { getStatusColor, getStatusName } from '@/utils/statusUtils';
-import { getPriorityColor, getPriorityName } from '@/utils/priorityUtils';
+import {
+  getPriorityColor,
+  getPriorityName,
+  getPriorityIcon,
+} from '@/utils/priorityUtils';
 
 defineProps<{
   issue: Issue;
