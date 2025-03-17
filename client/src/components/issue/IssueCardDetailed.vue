@@ -15,29 +15,18 @@
             :reporter-id="localIssue.reporter.id"
             :assignee-id="localIssue.assignee?.id"
             :is-editing="isEditing"
-            :status="localIssue.status"
             @start-editing="startEditing"
             @save-changes="saveChanges"
             @cancel-editing="cancelEditing"
-            @assign-to-me="assignToMe"
           />
         </template>
       </IssueHeader>
     </v-card-title>
 
-    <v-card-subtitle>
-      <span>Создан: {{ formatDate(localIssue.createdAt) }}</span>
-      <span
-        v-if="
-          !isEqualCreateAndUpdateDates(
-            localIssue.createdAt,
-            localIssue.updatedAt,
-          )
-        "
-      >
-        | Обновлен: {{ formatDate(localIssue.updatedAt) }}</span
-      >
-    </v-card-subtitle>
+    <IssueDates
+      :created-at="localIssue.createdAt"
+      :updated-at="localIssue.updatedAt"
+    />
 
     <v-card-text>
       <IssueDetails
@@ -52,7 +41,17 @@
         @update:description="editedIssue.description = $event"
         @update:status="editedIssue.status = $event"
         @update:priority="editedIssue.priority = $event"
-      />
+      >
+        <template #assignment>
+          <IssueAssignment
+            :assignee-id="localIssue.assignee?.id"
+            :auth-user-id="authUserId"
+            :status="localIssue.status"
+            :is-editing="isEditing"
+            @assign-to-me="assignToMe"
+          />
+        </template>
+      </IssueDetails>
 
       <v-divider class="my-6"></v-divider>
 
@@ -79,7 +78,6 @@
 
 <script setup lang="ts">
 import { defineProps, ref, onMounted } from 'vue';
-import { formatDate, isEqualCreateAndUpdateDates } from '@/utils/dateUtils';
 import { useCommentsStore } from '@/stores/commentStore';
 import { useAuthStore } from '@/stores/authStore';
 import { useIssuesStore } from '@/stores/issueStore';
@@ -91,6 +89,8 @@ import IssueActions from '@/components/issue/IssueActions.vue';
 import CommentSection from '@/components/comment/CommentSection.vue';
 import CommonSnackbar from '@/components/common/CommonSnackbar.vue';
 import SpinnerLoader from '@/components/common/SpinnerLoader.vue';
+import IssueDates from './IssueDates.vue';
+import IssueAssignment from './IssueAssignement.vue';
 
 const commentsStore = useCommentsStore();
 const issueStore = useIssuesStore();
