@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlalchemy import exists, or_, select
+from sqlalchemy import exists, or_, select, asc, desc
 from models import Issue, Priority, IssueStatus, Comment
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import joinedload, subqueryload
@@ -43,18 +43,25 @@ class IssueRepository:
     def get_all(self) -> list[Issue]:
         return self.db.session.query(Issue).all()
 
-    def get_all_paginated(self, page: int = 1, per_page: int = 10) -> list[Issue]:
-        return (
-            self.db.session.query(Issue)
-            .options(
-                joinedload(Issue.reporter),
-                joinedload(Issue.assignee),
-            )
-            .order_by(Issue.id)
-            .offset((page - 1) * per_page)
-            .limit(per_page)
-            .all()
+    def get_all_paginated(
+        self,
+        page: int = 1,
+        per_page: int = 10,
+        sort_key: str = "id",
+        sort_direction: str = "asc",
+    ) -> list[Issue]:
+        query = self.db.session.query(Issue).options(
+            joinedload(Issue.reporter),
+            joinedload(Issue.assignee),
         )
+
+        direction = asc if sort_direction == "asc" else desc
+        sort_column = getattr(Issue, sort_key, Issue.id)
+
+        query = query.order_by(direction(sort_column))
+
+        query = query.offset((page - 1) * per_page).limit(per_page)
+        return query.all()
 
     def get_by_reporter_id(
         self, reporter_id: int, page: int = 1, per_page: int = 10
