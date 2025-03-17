@@ -100,7 +100,7 @@
 <details>
 <summary>Нажмите, чтобы открыть спойлер</summary>
 
-![video](https://github.com/ath31st/repo/assets/unique-id/video-file.mp4)
+![video](https://github.com/user-attachments/assets/9e239bad-f13a-420d-a146-b7a4dab2f43a)
 
 </details>
 
