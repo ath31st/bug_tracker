@@ -25,7 +25,7 @@ import FooterComponent from '@/components/FooterComponent.vue';
 import backgroundImage from '@/assets/background.jpg';
 
 const route = useRoute();
-const noLayoutRoutes = ['/login', '/register'];
+const noLayoutRoutes = ['/login', '/register', '/not-found'];
 
 const shouldShowLayout = computed(() => {
   return !noLayoutRoutes.includes(route.path);
