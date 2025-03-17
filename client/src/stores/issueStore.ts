@@ -184,6 +184,7 @@ export const useIssuesStore = defineStore('issues', () => {
   ) => {
     filterReporterId.value = reporterId;
     filterAssigneeId.value = assigneeId;
+    currentPage.value = 1;
   };
 
   return {
