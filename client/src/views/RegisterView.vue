@@ -83,9 +83,9 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useUsersStore } from '@/stores/userStore';
-import CommonButton from '@/components/button/CommonButton.vue';
+import CommonButton from '@/components/common/CommonButton.vue';
 import { useSnackbarStore } from '@/stores/snackbarStore';
-import CommonSnackbar from '@/components/CommonSnackbar.vue';
+import CommonSnackbar from '@/components/common/CommonSnackbar.vue';
 import type { NewUser } from '@/types';
 
 const router = useRouter();

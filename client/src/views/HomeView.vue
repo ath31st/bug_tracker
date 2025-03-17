@@ -57,7 +57,7 @@
 import { onMounted, ref, computed } from 'vue';
 import { useIssuesStore } from '@/stores/issueStore';
 import IssueListHeader from '@/components/issue/IssueListHeader.vue';
-import SpinnerLoader from '@/components/loader/SpinnerLoader.vue';
+import SpinnerLoader from '@/components/common/SpinnerLoader.vue';
 import IssueList from '@/components/issue/IssueList.vue';
 import IssueActionBar from '@/components/issue/IssueActionBar.vue';
 

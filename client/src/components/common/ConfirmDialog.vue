@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import CommonButton from '../button/CommonButton.vue';
+import CommonButton from '../common/CommonButton.vue';
 
 const props = defineProps<{
   modelValue: boolean;

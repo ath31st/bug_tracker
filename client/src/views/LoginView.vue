@@ -67,8 +67,8 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useSnackbarStore } from '@/stores/snackbarStore';
-import CommonButton from '@/components/button/CommonButton.vue';
-import CommonSnackbar from '@/components/CommonSnackbar.vue';
+import CommonButton from '@/components/common/CommonButton.vue';
+import CommonSnackbar from '@/components/common/CommonSnackbar.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();

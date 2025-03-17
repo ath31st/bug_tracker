@@ -32,7 +32,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { useUsersStore } from '@/stores/userStore';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import UserModal from '@/components/modal/UserModal.vue';
+import UserModal from '@/components/user/UserModal.vue';
 import type { User } from '@/types';
 
 const authStore = useAuthStore();

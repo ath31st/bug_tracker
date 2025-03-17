@@ -52,9 +52,9 @@
 import { ref } from 'vue';
 import { useIssuesStore } from '@/stores/issueStore';
 import { useSnackbarStore } from '@/stores/snackbarStore';
-import CommonSnackbar from '@/components/CommonSnackbar.vue';
+import CommonSnackbar from '@/components/common/CommonSnackbar.vue';
 import type { NewIssue } from '@/types';
-import CommonButton from '@/components/button/CommonButton.vue';
+import CommonButton from '@/components/common/CommonButton.vue';
 import { getPriorityName, priorityOrder } from '@/utils/priorityUtils';
 import { useRouter } from 'vue-router';
 

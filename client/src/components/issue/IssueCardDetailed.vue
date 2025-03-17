@@ -227,10 +227,10 @@ import CommentList from '@/components/comment/CommentList.vue';
 import { useCommentsStore } from '@/stores/commentStore';
 import { useAuthStore } from '@/stores/authStore';
 import { useIssuesStore } from '@/stores/issueStore';
-import CommonButton from '../button/CommonButton.vue';
-import SpinnerLoader from '@/components/loader/SpinnerLoader.vue';
+import CommonButton from '../common/CommonButton.vue';
+import SpinnerLoader from '@/components/common/SpinnerLoader.vue';
 import { useSnackbarStore } from '@/stores/snackbarStore';
-import CommonSnackbar from '../CommonSnackbar.vue';
+import CommonSnackbar from '../common/CommonSnackbar.vue';
 
 const commentsStore = useCommentsStore();
 const issueStore = useIssuesStore();

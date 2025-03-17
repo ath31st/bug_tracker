@@ -37,7 +37,7 @@
 import { computed } from 'vue';
 import type { User } from '@/types';
 import { formatDate } from '@/utils/dateUtils';
-import CommonButton from '../button/CommonButton.vue';
+import CommonButton from '../common/CommonButton.vue';
 
 const props = defineProps<{
   user: User | null;

@@ -64,7 +64,7 @@
 import { defineProps, ref } from 'vue';
 import { formatDate, isEqualCreateAndUpdateDates } from '@/utils/dateUtils';
 import type { Comment, UpdateComment } from '@/types';
-import ConfirmDialog from '@/components/modal/ConfirmDialog.vue';
+import ConfirmDialog from '@/components/common/ConfirmDialog.vue';
 
 const props = defineProps<{
   comment: Comment;

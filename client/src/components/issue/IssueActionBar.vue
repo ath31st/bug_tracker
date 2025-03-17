@@ -33,7 +33,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import CommonButton from '@/components/button/CommonButton.vue';
+import CommonButton from '@/components/common/CommonButton.vue';
 import { useIssuesStore } from '@/stores/issueStore';
 import { useAuthStore } from '@/stores/authStore';
 
