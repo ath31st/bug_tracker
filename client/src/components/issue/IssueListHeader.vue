@@ -1,5 +1,5 @@
 <template>
-  <v-row class="px-5">
+  <v-row class="px-5 mt-2">
     <v-col cols="1" class="header-col clickable" @click="sort('id')">
       <span>ID</span>
       <v-icon v-if="sortKey === 'id'" size="small">

@@ -10,7 +10,7 @@
       <v-col cols="2">
         <CommonButton
           class="w-100"
-          :variant="filterMyIssues ? 'elevated' : 'outlined'"
+          :variant="isMyIssuesActive ? 'elevated' : 'outlined'"
           @click="toggleMyIssues"
         >
           <v-icon>mdi-account</v-icon>
@@ -20,7 +20,7 @@
       <v-col cols="2">
         <CommonButton
           class="w-100"
-          :variant="filterAssignedToMe ? 'elevated' : 'outlined'"
+          :variant="isAssignedToMeActive ? 'elevated' : 'outlined'"
           @click="toggleAssignedToMe"
         >
           <v-icon>mdi-account-check</v-icon>
@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed } from 'vue';
 import CommonButton from '@/components/button/CommonButton.vue';
 import { useIssuesStore } from '@/stores/issueStore';
 import { useAuthStore } from '@/stores/authStore';
@@ -40,26 +40,24 @@ import { useAuthStore } from '@/stores/authStore';
 const issuesStore = useIssuesStore();
 const authStore = useAuthStore();
 
-const filterMyIssues = ref(false);
-const filterAssignedToMe = ref(false);
 const currentUserId = authStore.user?.id;
 
+const isMyIssuesActive = computed(
+  () => issuesStore.filterReporterId === currentUserId,
+);
+const isAssignedToMeActive = computed(
+  () => issuesStore.filterAssigneeId === currentUserId,
+);
+
 const toggleMyIssues = async () => {
-  filterMyIssues.value = !filterMyIssues.value;
-  filterAssignedToMe.value = false;
-  await applyFilters();
+  const newReporterId = isMyIssuesActive.value ? undefined : currentUserId;
+  await issuesStore.setFilters(newReporterId, undefined);
+  await issuesStore.fetchIssues();
 };
 
 const toggleAssignedToMe = async () => {
-  filterAssignedToMe.value = !filterAssignedToMe.value;
-  filterMyIssues.value = false;
-  await applyFilters();
-};
-
-const applyFilters = async () => {
-  const reporterId = filterMyIssues.value ? currentUserId : undefined;
-  const assigneeId = filterAssignedToMe.value ? currentUserId : undefined;
-  await issuesStore.setFilters(reporterId, assigneeId);
+  const newAssigneeId = isAssignedToMeActive.value ? undefined : currentUserId;
+  await issuesStore.setFilters(undefined, newAssigneeId);
   await issuesStore.fetchIssues();
 };
 </script>

@@ -28,8 +28,6 @@ export const useIssuesStore = defineStore('issues', () => {
     direction?: 'asc' | 'desc',
     page?: number,
     perPage?: number,
-    reporterId?: number,
-    assigneeId?: number,
   ) {
     try {
       loading.value = true;
@@ -39,16 +37,14 @@ export const useIssuesStore = defineStore('issues', () => {
       const perPageToFetch = perPage ?? elementsPerPage.value;
       const sortKeyToFetch = key ?? sortKey.value;
       const sortDirectionToFetch = direction ?? sortDirection.value;
-      const reporterIdToFetch = reporterId ?? filterReporterId.value;
-      const assigneeIdToFetch = assigneeId ?? filterAssigneeId.value;
 
       const response = await issueApi.getIssues(
         pageToFetch,
         perPageToFetch,
         sortKeyToFetch,
         sortDirectionToFetch,
-        reporterIdToFetch,
-        assigneeIdToFetch,
+        filterReporterId.value,
+        filterAssigneeId.value,
       );
 
       issues.value = response.items;
@@ -198,6 +194,8 @@ export const useIssuesStore = defineStore('issues', () => {
     elementsPerPage,
     totalItems,
     totalPages,
+    filterReporterId,
+    filterAssigneeId,
 
     getIssueById,
     issuesCount,
