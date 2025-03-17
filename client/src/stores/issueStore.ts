@@ -11,6 +11,8 @@ export const useIssuesStore = defineStore('issues', () => {
   const elementsPerPage = ref(10);
   const totalItems = ref(0);
   const totalPages = ref(0);
+  const sortKey = ref<string>('createdAt');
+  const sortDirection = ref<'asc' | 'desc'>('asc');
 
   const getIssueById = computed(() => {
     return (issueId: number) =>
@@ -19,15 +21,27 @@ export const useIssuesStore = defineStore('issues', () => {
 
   const issuesCount = computed(() => issues.value.length);
 
-  async function fetchIssues(page?: number, perPage?: number) {
+  async function fetchIssues(
+    key?: string,
+    direction?: 'asc' | 'desc',
+    page?: number,
+    perPage?: number,
+  ) {
     try {
       loading.value = true;
       error.value = null;
 
       const pageToFetch = page ?? currentPage.value;
       const perPageToFetch = perPage ?? elementsPerPage.value;
+      const sortKeyToFetch = key ?? sortKey.value;
+      const sortDirectionToFetch = direction ?? sortDirection.value;
 
-      const response = await issueApi.getIssues(pageToFetch, perPageToFetch);
+      const response = await issueApi.getIssues(
+        pageToFetch,
+        perPageToFetch,
+        sortKeyToFetch,
+        sortDirectionToFetch,
+      );
 
       issues.value = response.items;
       currentPage.value = response.currentPage;
@@ -145,15 +159,20 @@ export const useIssuesStore = defineStore('issues', () => {
 
   async function setPage(page: number) {
     if (page >= 1 && page <= totalPages.value) {
-      await fetchIssues(page);
+      await fetchIssues(sortKey.value, sortDirection.value, page);
     }
   }
 
   async function setElementsPerPage(perPage: number) {
     if (perPage > 0) {
-      await fetchIssues(1, perPage);
+      await fetchIssues(sortKey.value, sortDirection.value, 1, perPage);
     }
   }
+
+  const setSort = async (key: string, direction: 'asc' | 'desc') => {
+    sortKey.value = key;
+    sortDirection.value = direction;
+  };
 
   return {
     issues,
@@ -175,5 +194,6 @@ export const useIssuesStore = defineStore('issues', () => {
     assignIssue,
     setPage,
     setElementsPerPage,
+    setSort,
   };
 });
