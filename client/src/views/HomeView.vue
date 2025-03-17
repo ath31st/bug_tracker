@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <IssueActionBar />
-    <IssueListHeader />
+    <IssueListHeader @sort="handleSort" />
     <SpinnerLoader v-if="issuesStore.loading" />
 
     <v-alert v-if="issuesStore.error" type="error" dismissible class="my-4">
@@ -87,6 +87,18 @@ const handleItemsPerPageChange = async (value: number) => {
     await issuesStore.setElementsPerPage(value);
   } catch (error) {
     console.error('Error changing items per page:', error);
+  }
+};
+
+const handleSort = async (sortData: {
+  key: string;
+  direction: 'asc' | 'desc';
+}) => {
+  try {
+    await issuesStore.setSort(sortData.key, sortData.direction);
+    await issuesStore.fetchIssues();
+  } catch (error) {
+    console.error('Ошибка при сортировке:', error);
   }
 };
 
