@@ -20,7 +20,7 @@
       type="info"
       class="my-4"
     >
-      База данных пуста
+      Заявок пока нет
     </v-alert>
 
     <div class="pagination-controls" v-if="issuesStore.totalPages > 1">
