@@ -1,55 +1,30 @@
 <template>
   <v-card v-if="localIssue" class="pa-2">
     <v-card-title class="headline">
-      <v-row align="center">
-        <v-col cols="10">
-          <span v-if="!isEditing || authUserId !== localIssue.reporter.id"
-            >ID: {{ localIssue.id }} - {{ localIssue.title }}</span
-          >
-          <v-text-field
-            v-if="isEditing && authUserId === localIssue.reporter.id"
-            class="mt-4"
-            v-model="editedIssue.title"
-            label="Заголовок"
-            variant="outlined"
-            density="compact"
-            hide-details="auto"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="2" class="text-right">
-          <v-btn
-            v-if="
-              (authUserId === localIssue.reporter.id ||
-                authUserId === localIssue.assignee?.id) &&
-              !isEditing
-            "
-            variant="text"
-            color="primary"
-            @click="startEditing"
-          >
-            <v-icon>mdi-pencil</v-icon>
-          </v-btn>
-
-          <v-btn
-            v-if="isEditing"
-            variant="text"
-            color="primary"
-            @click="saveChanges"
-          >
-            <v-icon>mdi-check</v-icon>
-          </v-btn>
-
-          <v-btn
-            v-if="isEditing"
-            variant="text"
-            color="error"
-            @click="cancelEditing"
-          >
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-col>
-      </v-row>
+      <IssueHeader
+        :issue-id="localIssue.id"
+        :title="localIssue.title"
+        :reporter-id="localIssue.reporter.id"
+        :auth-user-id="authUserId"
+        :is-editing="isEditing"
+        @update:title="editedIssue.title = $event"
+      >
+        <template #actions>
+          <IssueActions
+            :auth-user-id="authUserId"
+            :reporter-id="localIssue.reporter.id"
+            :assignee-id="localIssue.assignee?.id"
+            :is-editing="isEditing"
+            :status="localIssue.status"
+            @start-editing="startEditing"
+            @save-changes="saveChanges"
+            @cancel-editing="cancelEditing"
+            @assign-to-me="assignToMe"
+          />
+        </template>
+      </IssueHeader>
     </v-card-title>
+
     <v-card-subtitle>
       <span>Создан: {{ formatDate(localIssue.createdAt) }}</span>
       <span
@@ -63,134 +38,33 @@
         | Обновлен: {{ formatDate(localIssue.updatedAt) }}</span
       >
     </v-card-subtitle>
+
     <v-card-text>
-      <v-row>
-        <v-col cols="7">
-          <p>
-            <strong v-if="!isEditing || authUserId !== localIssue.reporter.id"
-              >Описание:</strong
-            >
-          </p>
-          <p v-if="!isEditing || authUserId !== localIssue.reporter.id">
-            {{ localIssue.description }}
-          </p>
-          <v-textarea
-            v-if="isEditing && authUserId === localIssue.reporter.id"
-            v-model="editedIssue.description"
-            label="Описание"
-            variant="outlined"
-            hide-details="auto"
-          ></v-textarea>
-        </v-col>
-
-        <v-divider vertical></v-divider>
-
-        <v-col cols="5">
-          <v-row>
-            <v-col cols="6">
-              <strong>Автор:</strong> {{ localIssue.reporter.username }}
-            </v-col>
-            <v-col cols="6">
-              <strong v-if="!isEditing">Статус:</strong>
-              <v-chip
-                v-if="!isEditing"
-                :color="getStatusColor(localIssue.status)"
-                class="ml-2"
-              >
-                {{ getStatusName(localIssue.status) }}
-              </v-chip>
-              <v-select
-                v-else
-                v-model="editedIssue.status"
-                :items="statusOrder"
-                :item-title="getStatusName"
-                :item-value="(self) => self"
-                label="Статус"
-                variant="outlined"
-                density="compact"
-                hide-details="auto"
-              ></v-select>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col cols="6">
-              <strong>Исполнитель:</strong>
-              {{ localIssue.assignee?.username || 'Не назначен' }}
-            </v-col>
-            <v-col cols="6">
-              <strong v-if="!isEditing">Приоритет:</strong>
-              <v-chip
-                v-if="!isEditing"
-                :color="getPriorityColor(localIssue.priority)"
-                class="ml-2"
-              >
-                {{ getPriorityName(localIssue.priority) }}
-              </v-chip>
-              <v-select
-                v-if="isEditing && authUserId === localIssue.reporter.id"
-                v-model="editedIssue.priority"
-                :items="priorityOrder"
-                :item-title="getPriorityName"
-                :item-value="(self) => self"
-                label="Приоритет"
-                variant="outlined"
-                density="compact"
-                hide-details="auto"
-              ></v-select>
-            </v-col>
-          </v-row>
-          <v-row v-if="!localIssue.assignee && authUserId && !isEditing">
-            <v-col cols="12" class="pt-2">
-              <CommonButton
-                variant="outlined"
-                :disabled="
-                  localIssue.status == IssueStatus.CLOSED ||
-                  localIssue.status == IssueStatus.RESOLVED
-                "
-                color="white"
-                class="w-100"
-                @click="assignToMe"
-              >
-                Взять в работу
-              </CommonButton>
-            </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
+      <IssueDetails
+        :description="localIssue.description"
+        :status="localIssue.status"
+        :priority="localIssue.priority"
+        :reporter-username="localIssue.reporter.username"
+        :assignee-username="localIssue.assignee?.username"
+        :reporter-id="localIssue.reporter.id"
+        :auth-user-id="authUserId"
+        :is-editing="isEditing"
+        @update:description="editedIssue.description = $event"
+        @update:status="editedIssue.status = $event"
+        @update:priority="editedIssue.priority = $event"
+      />
 
       <v-divider class="my-6"></v-divider>
 
-      <CommentList
-        v-if="!isEditing"
+      <CommentSection
         :comments="localIssue.comments"
         :auth-user-id="authUserId"
-        @delete="handleDeleteComment"
-        @update="handleUpdateComment"
+        :is-editing="isEditing"
+        v-model="localComment"
+        @submit-comment="submitComment"
+        @delete-comment="handleDeleteComment"
+        @update-comment="handleUpdateComment"
       />
-
-      <v-row v-if="!isEditing" class="mt-2 mb-2" align="center">
-        <v-col cols="10">
-          <v-text-field
-            v-model="comment"
-            label="Добавить комментарий"
-            variant="outlined"
-            clearable
-            density="compact"
-            hide-details="auto"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="2">
-          <CommonButton
-            class="w-100"
-            variant="outlined"
-            color="white"
-            :disabled="!comment || comment.trim() === ''"
-            @click="submitComment"
-          >
-            Отправить
-          </CommonButton>
-        </v-col>
-      </v-row>
     </v-card-text>
 
     <CommonSnackbar
@@ -206,111 +80,55 @@
 <script setup lang="ts">
 import { defineProps, ref, onMounted } from 'vue';
 import { formatDate, isEqualCreateAndUpdateDates } from '@/utils/dateUtils';
-import {
-  getStatusColor,
-  getStatusName,
-  statusOrder,
-} from '@/utils/statusUtils';
-import {
-  getPriorityColor,
-  getPriorityName,
-  priorityOrder,
-} from '@/utils/priorityUtils';
-import {
-  IssueStatus,
-  type Issue,
-  type NewComment,
-  type UpdateComment,
-  type UpdateIssue,
-} from '@/types';
-import CommentList from '@/components/comment/CommentList.vue';
 import { useCommentsStore } from '@/stores/commentStore';
 import { useAuthStore } from '@/stores/authStore';
 import { useIssuesStore } from '@/stores/issueStore';
-import CommonButton from '../common/CommonButton.vue';
-import SpinnerLoader from '@/components/common/SpinnerLoader.vue';
 import { useSnackbarStore } from '@/stores/snackbarStore';
-import CommonSnackbar from '../common/CommonSnackbar.vue';
+import type { Issue, NewComment, UpdateComment } from '@/types';
+import IssueHeader from '@/components/issue/IssueHeader.vue';
+import IssueDetails from '@/components/issue/IssueDetails.vue';
+import IssueActions from '@/components/issue/IssueActions.vue';
+import CommentSection from '@/components/comment/CommentSection.vue';
+import CommonSnackbar from '@/components/common/CommonSnackbar.vue';
+import SpinnerLoader from '@/components/common/SpinnerLoader.vue';
 
 const commentsStore = useCommentsStore();
 const issueStore = useIssuesStore();
 const authStore = useAuthStore();
 const snackbarStore = useSnackbarStore();
 
-const props = defineProps<{
-  issueId: number;
-}>();
+const props = defineProps<{ issueId: number }>();
 
 const localIssue = ref<Issue | null>(null);
 const authUserId = ref(authStore.user?.id);
-const comment = ref('');
 const isEditing = ref(false);
 const editedIssue = ref<Partial<Issue>>({});
+const localComment = ref('');
 
-onMounted(async () => {
-  await loadIssue();
-});
+onMounted(async () => await loadIssue());
 
-async function loadIssue() {
+const loadIssue = async () => {
   try {
     const issue = await issueStore.fetchIssue(props.issueId);
     localIssue.value = issue;
   } catch (err) {
     console.error('Ошибка при загрузке задачи:', err);
   }
-}
-
-const submitComment = async () => {
-  if (
-    !comment.value ||
-    comment.value.trim() === '' ||
-    commentsStore.loading ||
-    !localIssue.value
-  )
-    return;
-
-  const newComment: NewComment = {
-    content: comment.value.trim(),
-    issueId: localIssue.value.id,
-  };
-
-  try {
-    await commentsStore.createComment(newComment);
-    const updatedComments = await commentsStore.getCommentsByIssueId(
-      localIssue.value.id,
-    );
-    localIssue.value.comments = updatedComments;
-
-    snackbarStore.show('Комментарий успешно добавлен!', {
-      color: 'success',
-      timeout: 2000,
-    });
-  } catch (err) {
-    console.error(err);
-    snackbarStore.show('Ошибка при добавлении комментария.', {
-      color: 'error',
-      timeout: 3000,
-    });
-  } finally {
-    comment.value = '';
-  }
 };
 
-function startEditing() {
+const startEditing = () => {
   editedIssue.value = { ...localIssue.value };
   isEditing.value = true;
-}
+};
 
-async function saveChanges() {
+const saveChanges = async () => {
   if (!localIssue.value) return;
-
-  const updateData: UpdateIssue = {
+  const updateData = {
     title: editedIssue.value.title,
     description: editedIssue.value.description,
     status: editedIssue.value.status,
     priority: editedIssue.value.priority,
   };
-
   try {
     const updatedIssue = await issueStore.updateIssue(
       localIssue.value.id,
@@ -318,7 +136,6 @@ async function saveChanges() {
     );
     localIssue.value = updatedIssue;
     isEditing.value = false;
-
     snackbarStore.show('Задача успешно обновлена!', {
       color: 'success',
       timeout: 2000,
@@ -330,23 +147,43 @@ async function saveChanges() {
       timeout: 3000,
     });
   }
-}
+};
 
-function cancelEditing() {
+const cancelEditing = () => {
   isEditing.value = false;
   editedIssue.value = {};
-}
+};
 
-const handleUpdateComment = async (
-  commentId: number,
-  comment: UpdateComment,
-) => {
+const submitComment = async (content: string) => {
+  if (!content.trim() || !localIssue.value) return;
+  const newComment: NewComment = { content, issueId: localIssue.value.id };
   try {
-    await commentsStore.updateComment(commentId, comment);
-    const updatedComment = await commentsStore.getCommentById(commentId);
-    const index = localIssue.value!.comments.findIndex(
-      (c) => c.id === commentId,
+    await commentsStore.createComment(newComment);
+    localIssue.value.comments = await commentsStore.getCommentsByIssueId(
+      localIssue.value.id,
     );
+
+    localComment.value = '';
+
+    snackbarStore.show('Комментарий успешно добавлен!', {
+      color: 'success',
+      timeout: 2000,
+    });
+  } catch (err) {
+    console.error(err);
+
+    snackbarStore.show('Ошибка при добавлении комментария.', {
+      color: 'error',
+      timeout: 3000,
+    });
+  }
+};
+
+const handleUpdateComment = async (id: number, comment: UpdateComment) => {
+  try {
+    await commentsStore.updateComment(id, comment);
+    const updatedComment = await commentsStore.getCommentById(id);
+    const index = localIssue.value!.comments.findIndex((c) => c.id === id);
     if (index !== -1) localIssue.value!.comments[index] = updatedComment;
 
     snackbarStore.show('Комментарий успешно изменен!', {
@@ -355,6 +192,7 @@ const handleUpdateComment = async (
     });
   } catch (err) {
     console.error(err);
+
     snackbarStore.show('Ошибка при изменении комментария.', {
       color: 'error',
       timeout: 3000,
@@ -375,6 +213,7 @@ const handleDeleteComment = async (commentId: number) => {
     });
   } catch (err) {
     console.error(err);
+
     snackbarStore.show('Ошибка при удалении комментария.', {
       color: 'error',
       timeout: 3000,
@@ -384,7 +223,6 @@ const handleDeleteComment = async (commentId: number) => {
 
 const assignToMe = async () => {
   if (!localIssue.value) return;
-
   try {
     const updatedIssue = await issueStore.assignIssue(localIssue.value.id);
     localIssue.value = updatedIssue;
@@ -395,6 +233,7 @@ const assignToMe = async () => {
     });
   } catch (err) {
     console.error('Ошибка при назначении задачи:', err);
+
     snackbarStore.show('Ошибка при назначении задачи.', {
       color: 'error',
       timeout: 3000,
@@ -402,14 +241,3 @@ const assignToMe = async () => {
   }
 };
 </script>
-
-<style scoped>
-.headline {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.v-card-subtitle {
-  margin-top: 8px;
-}
-</style>
