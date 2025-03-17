@@ -43,6 +43,18 @@ class IssueRepository:
     def get_all(self) -> list[Issue]:
         return self.db.session.query(Issue).all()
 
+    def get_issues_with_filters(
+        self, reporter_id: Optional[int], assignee_id: Optional[int]
+    ) -> list[Issue]:
+        query = self.db.session.query(Issue)
+
+        if reporter_id:
+            query = query.filter(Issue.reporter_id == reporter_id)
+        if assignee_id:
+            query = query.filter(Issue.assignee_id == assignee_id)
+
+        return query.all()
+
     def get_all_paginated(
         self,
         page: int = 1,
@@ -59,7 +71,6 @@ class IssueRepository:
 
         if assignee_id:
             query = query.filter(Issue.assignee_id == assignee_id)
-
         if reporter_id:
             query = query.filter(Issue.reporter_id == reporter_id)
 

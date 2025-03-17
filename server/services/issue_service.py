@@ -40,6 +40,16 @@ class IssueService:
     def get_all_issues(self) -> list[Issue]:
         return self.repository.get_all() or []
 
+    def get_issues_with_filters(
+        self, reporter_id: Optional[int], assignee_id: Optional[int]
+    ) -> list[Issue]:
+        return self.repository.get_issues_with_filters(reporter_id, assignee_id)
+
+    def get_count_issues_with_filters(
+        self, reporter_id: Optional[int], assignee_id: Optional[int]
+    ) -> int:
+        return len(self.get_issues_with_filters(reporter_id, assignee_id))
+
     def get_count_issues(self) -> int:
         return len(self.get_all_issues())
 
@@ -63,7 +73,7 @@ class IssueService:
             )
             or []
         )
-        total_issues = self.get_count_issues()
+        total_issues = self.get_count_issues_with_filters(reporter_id, assignee_id)
         total_pages = (total_issues + elements_per_page - 1) // elements_per_page
 
         return Page(issues, total_issues, total_pages, page)
