@@ -116,7 +116,7 @@ const loadIssue = async () => {
     const issue = await issueStore.fetchIssue(issueId.value);
     localIssue.value = issue;
   } catch (err) {
-    console.error('Ошибка при загрузке задачи:', err);
+    console.error('Error loading issue:', err);
   }
 };
 
@@ -145,7 +145,8 @@ const saveChanges = async () => {
       timeout: 2000,
     });
   } catch (err) {
-    console.error('Ошибка при сохранении изменений:', err);
+    console.error('Error saving changes:', err);
+
     snackbarStore.show('Ошибка при сохранении изменений.', {
       color: 'error',
       timeout: 3000,

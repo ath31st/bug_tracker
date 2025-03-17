@@ -98,7 +98,7 @@ const handleSort = async (sortData: {
     await issuesStore.setSort(sortData.key, sortData.direction);
     await issuesStore.fetchIssues();
   } catch (error) {
-    console.error('Ошибка при сортировке:', error);
+    console.error('Error sorting:', error);
   }
 };
 
