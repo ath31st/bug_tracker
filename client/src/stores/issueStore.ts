@@ -13,6 +13,8 @@ export const useIssuesStore = defineStore('issues', () => {
   const totalPages = ref(0);
   const sortKey = ref<string>('createdAt');
   const sortDirection = ref<'asc' | 'desc'>('asc');
+  const filterReporterId = ref<number | undefined>(undefined);
+  const filterAssigneeId = ref<number | undefined>(undefined);
 
   const getIssueById = computed(() => {
     return (issueId: number) =>
@@ -26,6 +28,8 @@ export const useIssuesStore = defineStore('issues', () => {
     direction?: 'asc' | 'desc',
     page?: number,
     perPage?: number,
+    reporterId?: number,
+    assigneeId?: number,
   ) {
     try {
       loading.value = true;
@@ -35,12 +39,16 @@ export const useIssuesStore = defineStore('issues', () => {
       const perPageToFetch = perPage ?? elementsPerPage.value;
       const sortKeyToFetch = key ?? sortKey.value;
       const sortDirectionToFetch = direction ?? sortDirection.value;
+      const reporterIdToFetch = reporterId ?? filterReporterId.value;
+      const assigneeIdToFetch = assigneeId ?? filterAssigneeId.value;
 
       const response = await issueApi.getIssues(
         pageToFetch,
         perPageToFetch,
         sortKeyToFetch,
         sortDirectionToFetch,
+        reporterIdToFetch,
+        assigneeIdToFetch,
       );
 
       issues.value = response.items;
@@ -174,6 +182,14 @@ export const useIssuesStore = defineStore('issues', () => {
     sortDirection.value = direction;
   };
 
+  const setFilters = async (
+    reporterId: number | undefined,
+    assigneeId: number | undefined,
+  ) => {
+    filterReporterId.value = reporterId;
+    filterAssigneeId.value = assigneeId;
+  };
+
   return {
     issues,
     loading,
@@ -195,5 +211,6 @@ export const useIssuesStore = defineStore('issues', () => {
     setPage,
     setElementsPerPage,
     setSort,
+    setFilters,
   };
 });

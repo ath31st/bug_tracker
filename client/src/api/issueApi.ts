@@ -8,6 +8,8 @@ export const getIssues = async (
   elementsPerPage: number,
   sortKey: string,
   sortDirection: string,
+  reporterId?: number,
+  assigneeId?: number,
 ): Promise<Page<Issue>> => {
   const response = await customAxios.get(ISSUES_PREFIX, {
     params: {
@@ -15,6 +17,8 @@ export const getIssues = async (
       elementsPerPage: elementsPerPage,
       sortKey: sortKey,
       sortDirection: sortDirection,
+      reporterId: reporterId,
+      assigneeId: assigneeId,
     },
   });
   return response.data;
