@@ -1,6 +1,11 @@
 <template>
   <v-container>
-    <IssueActionBar />
+    <IssueActionBar
+      :is-my-issues-active="isMyIssuesActive"
+      :is-assigned-to-me-active="isAssignedToMeActive"
+      @toggle-my-issues="toggleMyIssues"
+      @toggle-assigned-to-me="toggleAssignedToMe"
+    />
     <IssueListHeader @sort="handleSort" />
     <SpinnerLoader v-if="issuesStore.loading" />
 
@@ -60,9 +65,34 @@ import IssueListHeader from '@/components/issue/IssueListHeader.vue';
 import SpinnerLoader from '@/components/common/SpinnerLoader.vue';
 import IssueList from '@/components/issue/IssueList.vue';
 import IssueActionBar from '@/components/issue/IssueActionBar.vue';
+import { useAuthStore } from '@/stores/authStore';
 
 const issuesStore = useIssuesStore();
+const authStore = useAuthStore();
+
 const itemsPerPage = ref(issuesStore.elementsPerPage);
+
+const currentUserId = authStore.user?.id;
+
+const isMyIssuesActive = computed(
+  () => issuesStore.filterReporterId === currentUserId,
+);
+
+const isAssignedToMeActive = computed(
+  () => issuesStore.filterAssigneeId === currentUserId,
+);
+
+const toggleMyIssues = async () => {
+  const newReporterId = isMyIssuesActive.value ? undefined : currentUserId;
+  await issuesStore.setFilters(newReporterId, undefined);
+  await issuesStore.fetchIssues();
+};
+
+const toggleAssignedToMe = async () => {
+  const newAssigneeId = isAssignedToMeActive.value ? undefined : currentUserId;
+  await issuesStore.setFilters(undefined, newAssigneeId);
+  await issuesStore.fetchIssues();
+};
 
 const startIndex = computed(() => {
   return (issuesStore.currentPage - 1) * issuesStore.elementsPerPage + 1;

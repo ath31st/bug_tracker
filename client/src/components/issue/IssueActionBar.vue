@@ -11,7 +11,7 @@
         <CommonButton
           class="w-100"
           :variant="isMyIssuesActive ? 'elevated' : 'outlined'"
-          @click="toggleMyIssues"
+          @click="$emit('toggle-my-issues')"
         >
           <v-icon>mdi-account</v-icon>
           Мои заявки
@@ -21,7 +21,7 @@
         <CommonButton
           class="w-100"
           :variant="isAssignedToMeActive ? 'elevated' : 'outlined'"
-          @click="toggleAssignedToMe"
+          @click="$emit('toggle-assigned-to-me')"
         >
           <v-icon>mdi-account-check</v-icon>
           Приняты в работу
@@ -32,34 +32,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import CommonButton from '@/components/common/CommonButton.vue';
-import { useIssuesStore } from '@/stores/issueStore';
-import { useAuthStore } from '@/stores/authStore';
 
-const issuesStore = useIssuesStore();
-const authStore = useAuthStore();
+defineProps<{
+  isMyIssuesActive: boolean;
+  isAssignedToMeActive: boolean;
+}>();
 
-const currentUserId = authStore.user?.id;
-
-const isMyIssuesActive = computed(
-  () => issuesStore.filterReporterId === currentUserId,
-);
-const isAssignedToMeActive = computed(
-  () => issuesStore.filterAssigneeId === currentUserId,
-);
-
-const toggleMyIssues = async () => {
-  const newReporterId = isMyIssuesActive.value ? undefined : currentUserId;
-  await issuesStore.setFilters(newReporterId, undefined);
-  await issuesStore.fetchIssues();
-};
-
-const toggleAssignedToMe = async () => {
-  const newAssigneeId = isAssignedToMeActive.value ? undefined : currentUserId;
-  await issuesStore.setFilters(undefined, newAssigneeId);
-  await issuesStore.fetchIssues();
-};
+defineEmits<{
+  (e: 'toggle-my-issues'): void;
+  (e: 'toggle-assigned-to-me'): void;
+}>();
 </script>
-
-<style scoped></style>
