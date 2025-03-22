@@ -20,9 +20,6 @@ class CommentService:
         except Exception as e:
             raise ValueError(f"Comment creation failed: {str(e)}")
 
-    def get_all_comments(self) -> list[Comment]:
-        return self.repository.get_all() or []
-
     def get_comment_by_id(self, comment_id: int) -> Optional[Comment]:
         comment = self.repository.find_by_id(comment_id)
         if not comment:

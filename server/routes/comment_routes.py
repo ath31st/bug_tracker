@@ -62,14 +62,6 @@ def create_comment_routes(comment_service: CommentService, issue_service: IssueS
         except Exception as e:
             return jsonify({"error": "Internal Server Error"}), 500
 
-    @comment_routes.route("/", methods=["GET"])
-    def get_all_comments():
-        try:
-            comments = comment_service.get_all_comments()
-            return jsonify(comment_schema.dump(comments, many=True)), 200
-        except Exception as e:
-            return jsonify({"error": "Internal Server Error"}), 500
-
     @comment_routes.route("/<int:comment_id>", methods=["PUT"])
     def update_comment(comment_id):
         try:
