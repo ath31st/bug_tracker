@@ -1,5 +1,16 @@
 # Bug Tracker — Тестовое задание на full-stack разработчика
 
+## Оглавление
+
+1. [О проекте](#о-проекте)
+2. [Технологический стек](#технологический-стек)
+3. [Реализованный функционал](#реализованный-функционал)
+4. [Дата выполнения](#дата-выполнения)
+5. [Скриншоты](#скриншоты)
+6. [Видео демонстрация](#видео-демонстрация)
+7. [Как развернуть/запустить](#как-развернутьзапустить)
+8. [Итоги](#итоги)
+
 ## О проекте
 
 Минималистичный баг-трекер, разработанный как тестовое задание для позиции full-stack разработчика.
@@ -108,51 +119,70 @@
 Для запуска проекта необходимо выполнить следующие шаги:
 
 1. Клонируйте репозиторий с помощью команды:
+
    ```bash
    git clone https://github.com/ath31st/bug_tracker.git
 
+   ```
+
 2. Перейдите в директорию проекта:
+
    ```bash
    cd bug_tracker
+
+   ```
 
 3. Подготовьте три файла `.env` с настройками окружения:
 
    Все значения указаны для наглядности и в качестве примера, вы можете использовать свои
    значения.
 
-    - В корневой директории создайте файл `.env` со следующим содержимым:
-      ````
-      DB_USER=postgres
-      DB_PASSWORD=postgres
-      DB_NAME=bt_db
-      DB_OUTER_PORT=5434
+   - В корневой директории создайте файл `.env` со следующим содержимым:
 
-      CLIENT_INNER_PORT=80
-      SERVER_OUTER_PORT=5010
+     ```
+     DB_USER=postgres
+     DB_PASSWORD=postgres
+     DB_NAME=bt_db
+     DB_OUTER_PORT=5434
 
-    - В директории `./server/` создайте файл `.env` со следующим содержимым:
-      ````
-      DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432/bt_db
-      SECRET_KEY=oooof_very_secret_key
-      JWT_SECRET_KEY=oooof_very_jwt_secret_key
-      JWT_ACCESS_TOKEN_EXPIRES=3600
-      JWT_REFRESH_TOKEN_EXPIRES=604800
+     CLIENT_INNER_PORT=80
+     SERVER_OUTER_PORT=5010
 
-    - В директории `./client/` создайте файл `.env` со следующим содержимым:
-      ````
-      VITE_PUBLIC_API_URL=http://айпи_адрес_вашего_пк_или_сервера:5010/api/v1
+     ```
+
+   - В директории `./server/` создайте файл `.env` со следующим содержимым:
+
+     ```
+     DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432/bt_db
+     SECRET_KEY=oooof_very_secret_key
+     JWT_SECRET_KEY=oooof_very_jwt_secret_key
+     JWT_ACCESS_TOKEN_EXPIRES=3600
+     JWT_REFRESH_TOKEN_EXPIRES=604800
+
+     ```
+
+   - В директории `./client/` создайте файл `.env` со следующим содержимым:
+     ```
+     VITE_PUBLIC_API_URL=http://айпи_адрес_вашего_пк_или_сервера:5010/api/v1
+     ```
 
 4. Убедитесь, что у вас установлен Docker и Docker Compose.
-   ````bash
-   docker --version
-   ````
 
-   ````bash
+   ```bash
+   docker --version
+   ```
+
+   ```bash
    docker-compose --version
 
+   ```
+
 5. Выполните команду для сборки и запуска контейнеров в фоновом режиме:
-   ````bash
+
+   ```bash
    docker-compose up -d
+
+   ```
 
 6. Дождитесь завершения развертывания контейнеров.
    Это может занять несколько минут, в зависимости от вашей системы.
